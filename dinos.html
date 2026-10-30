@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>🦕 Wordle Jurásico</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="index.html">← Inicio</a>
+    <h1>🦕 Wordle Jurásico</h1>
+  </nav>
+  <main>
+    <div id="game"></div>
+    <details class="help">
+      <summary>¿Cómo se juega? / Leyenda de colores</summary>
+      <ul>
+        <li><span class="sw correct"></span><b>Verde</b>: coincide con el dinosaurio secreto</li>
+        <li><span class="sw close"></span><b>Amarillo</b>: cerca (peso/longitud) o año próximo</li>
+        <li><span class="sw wrong"></span><b>Gris</b>: no coincide. La flecha indica si debes subir ⬆️ o bajar ⬇️</li>
+      </ul>
+      <p><b>Pistas automáticas:</b> intento 3 → silueta · intento 5 → descubridor y año · intento 15 → nombre revelado.</p>
+      <p>Escribe el nombre científico (o alias como "T-Rex"). Solo se aceptan dinosaurios de la base de datos.</p>
+    </details>
+  </main>
+  <script src="engine.js"></script>
+  <script src="dinos.js"></script>
+</body>
+</html>
