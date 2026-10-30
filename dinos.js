@@ -3,11 +3,12 @@ fetch('data/dinos.json')
   .then(data => {
     createGame({
       data,
-      storageKey: 'dino-daily-v2',
+      gameId: 'dino',
+      storageKey: 'dino-daily-v5',
       maxAttempts: 20,
-      wikiLang: 'es',
+      wikiLang: 'en',
       wikiUrlFor: item =>
-        'https://es.wikipedia.org/wiki/' + encodeURIComponent(item.name.split(' ')[0]),
+        'https://en.wikipedia.org/wiki/' + encodeURIComponent(item.name.split(' ')[0]),
       placeholder: 'Ej: Tyrannosaurus, Triceratops... (empieza a escribir)',
       attributes: [
         { label: 'Periodo', display: d => d.period,
@@ -35,13 +36,7 @@ fetch('data/dinos.json')
       ],
       hints: [
         { id: 'silhouette', at: 3, label: 'Silueta',
-          render: t => ({
-            html: '<div class="silhouette" style="font-size:34px;filter:none;opacity:.5">🖼️</div>',
-            imageName: t.name,
-            imageLang: 'es',
-            imgClass: 'silhouette-img'
-          })
-        },
+          render: t => ({ imageName: t.name, imageLang: 'en' }) },
         { id: 'discoverer', at: 5, label: 'Descubridor y año',
           render: t => 'Descubierto por <b>' + t.discoverer + '</b> en <b>' + t.discoveredYear + '</b>.' },
         { id: 'description', at: 12, label: 'Descripción',

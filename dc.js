@@ -3,7 +3,8 @@ fetch('data/dc.json')
   .then(data => {
     createGame({
       data,
-      storageKey: 'dc-daily-v2',
+      gameId: 'dc',
+      storageKey: 'dc-daily-v5',
       maxAttempts: 20,
       wikiLang: 'en',
       wikiUrlFor: item =>
@@ -32,9 +33,7 @@ fetch('data/dc.json')
       ],
       hints: [
         { id: 'quote', at: 3, label: 'Cita famosa',
-          render: t => t.quote
-            ? '“' + t.quote + '”'
-            : '<i>Este personaje no tiene cita registrada.</i>' },
+          render: t => t.quote ? '“' + t.quote + '”' : '<i>Sin cita registrada.</i>' },
         { id: 'first', at: 5, label: 'Primera aparición',
           render: t => 'Debutó en <b>' + t.firstAppearance + '</b> como <b>' + t.name + '</b>.' },
         { id: 'description', at: 12, label: 'Descripción',
@@ -44,6 +43,6 @@ fetch('data/dc.json')
   })
   .catch(err => {
     document.getElementById('game').innerHTML =
-      '<p style="color:#ff7b72;padding:20px">Error al cargar datos. Sirve la página por http.</p>';
+      '<p style="color:#ff7b72;padding:20px">Error al cargar datos.</p>';
     console.error(err);
   });
