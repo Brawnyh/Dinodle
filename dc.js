@@ -3,12 +3,17 @@ fetch('data/dc.json')
   .then(data => {
     createGame({
       data,
-      storageKey: 'dc-daily-v1',
+      storageKey: 'dc-daily-v2',
       maxAttempts: 20,
-      placeholder: 'Ej: Superman, Batman, Clark Kent...',
+      wikiLang: 'en',
+      wikiUrlFor: item =>
+        'https://en.wikipedia.org/wiki/' + encodeURIComponent(item.name.replace(/ /g, '_')),
+      placeholder: 'Ej: Superman, Batman, Wonder Woman...',
       attributes: [
         { label: 'Nombre real', display: d => d.realName,
           compare: (g, t) => ({ status: g.realName === t.realName ? 'correct' : 'wrong' }) },
+        { label: 'Género', display: d => d.gender,
+          compare: (g, t) => ({ status: g.gender === t.gender ? 'correct' : 'wrong' }) },
         { label: 'Alineación', display: d => d.alignment,
           compare: (g, t) => ({ status: g.alignment === t.alignment ? 'correct' : 'wrong' }) },
         { label: '1ª aparición', display: d => d.firstAppearance,
@@ -26,12 +31,14 @@ fetch('data/dc.json')
           compare: (g, t) => ({ status: g.city === t.city ? 'correct' : 'wrong' }) }
       ],
       hints: [
-        { id: 'silhouette', at: 3, label: 'Silueta',
-          render: t => `<div class="silhouette">${t.emoji}</div>` },
+        { id: 'quote', at: 3, label: 'Cita famosa',
+          render: t => t.quote
+            ? '“' + t.quote + '”'
+            : '<i>Este personaje no tiene cita registrada.</i>' },
         { id: 'first', at: 5, label: 'Primera aparición',
-          render: t => `Debutó en <b>${t.firstAppearance}</b> como <b>${t.name}</b>.` },
-        { id: 'reveal', at: 15, label: 'Revelación',
-          render: t => `<b>${t.name}</b> — escríbelo para confirmar.` }
+          render: t => 'Debutó en <b>' + t.firstAppearance + '</b> como <b>' + t.name + '</b>.' },
+        { id: 'description', at: 12, label: 'Descripción',
+          render: t => t.description || 'Sin descripción disponible.' }
       ]
     });
   })

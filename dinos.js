@@ -3,9 +3,12 @@ fetch('data/dinos.json')
   .then(data => {
     createGame({
       data,
-      storageKey: 'dino-daily-v1',
+      storageKey: 'dino-daily-v2',
       maxAttempts: 20,
-      placeholder: 'Ej: Tyrannosaurus rex, T-Rex, Triceratops...',
+      wikiLang: 'es',
+      wikiUrlFor: item =>
+        'https://es.wikipedia.org/wiki/' + encodeURIComponent(item.name.split(' ')[0]),
+      placeholder: 'Ej: Tyrannosaurus, Triceratops... (empieza a escribir)',
       attributes: [
         { label: 'Periodo', display: d => d.period,
           compare: (g, t) => ({ status: g.period === t.period ? 'correct' : 'wrong' }) },
@@ -32,16 +35,22 @@ fetch('data/dinos.json')
       ],
       hints: [
         { id: 'silhouette', at: 3, label: 'Silueta',
-          render: t => `<div class="silhouette">${t.emoji}</div>` },
+          render: t => ({
+            html: '<div class="silhouette" style="font-size:34px;filter:none;opacity:.5">🖼️</div>',
+            imageName: t.name,
+            imageLang: 'es',
+            imgClass: 'silhouette-img'
+          })
+        },
         { id: 'discoverer', at: 5, label: 'Descubridor y año',
-          render: t => `Descubierto por <b>${t.discoverer}</b> en <b>${t.discoveredYear}</b>.` },
-        { id: 'reveal', at: 15, label: 'Revelación',
-          render: t => `<b>${t.name}</b> — escríbelo para confirmar.` }
+          render: t => 'Descubierto por <b>' + t.discoverer + '</b> en <b>' + t.discoveredYear + '</b>.' },
+        { id: 'description', at: 12, label: 'Descripción',
+          render: t => t.description || 'Sin descripción disponible.' }
       ]
     });
   })
   .catch(err => {
     document.getElementById('game').innerHTML =
-      '<p style="color:#ff7b72;padding:20px">Error al cargar datos. Sirve la página por http (no abras el archivo con doble clic).</p>';
+      '<p style="color:#ff7b72;padding:20px">Error al cargar datos. Sirve la página por http.</p>';
     console.error(err);
   });
