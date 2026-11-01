@@ -3,31 +3,77 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Wordle Jurásico & DC</title>
+<title>Wordle Dino & DC</title>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body class="home">
+  <div id="lang-toggle-home"></div>
   <main class="home-wrap">
-    <h1 class="home-title">🦖 Wordle <span class="grad">Jurásico</span> & 🦇 DC</h1>
-    <p class="home-sub">Adivina el personaje del día usando pistas de atributos.</p>
+    <h1 class="home-title">Wordle <span class="grad">Dino</span> & DC</h1>
+    <p class="home-sub" id="home-sub">Adivina el personaje del día usando pistas de atributos.</p>
 
     <div class="cards">
       <a class="card card-dino" href="dinos.html">
-        <span class="card-emoji">🦕</span>
-        <h2>Dinosaurios</h2>
-        <p>Peso, época, continente, tipo… y pistas extra al fallar.</p>
-        <span class="card-cta">Jugar →</span>
+        <h2 id="home-dino-title">Dinosaurios</h2>
+        <p id="home-dino-desc">Peso, época, continente, tipo... y pistas extra al fallar.</p>
+        <span class="card-cta" id="home-dino-cta">Jugar →</span>
       </a>
-
       <a class="card card-dc" href="dc.html">
-        <span class="card-emoji">🦸</span>
-        <h2>DC Comics</h2>
-        <p>Alineación, poderes, primera aparición, afiliación…</p>
-        <span class="card-cta">Jugar →</span>
+        <h2 id="home-dc-title">DC Comics</h2>
+        <p id="home-dc-desc">Alineación, poderes, primera aparición, género...</p>
+        <span class="card-cta" id="home-dc-cta">Jugar →</span>
       </a>
     </div>
 
-    <p class="home-foot">Hecho con HTML + CSS + JS puro · GitHub Pages</p>
+    <p class="home-foot" id="home-foot">HTML + CSS + JS puro · GitHub Pages</p>
   </main>
+  <script>
+  (function(){
+    var LANG_KEY = 'wordle_lang_v7';
+    var lang = localStorage.getItem(LANG_KEY) || 'es';
+    document.documentElement.lang = lang;
+    var T = {
+      es: {
+        sub: 'Adivina el personaje del día usando pistas de atributos.',
+        dinoT: 'Dinosaurios', dinoD: 'Peso, época, continente, tipo... y pistas extra al fallar.',
+        dcT: 'DC Comics', dcD: 'Alineación, poderes, primera aparición, género...',
+        play: 'Jugar →', foot: 'HTML + CSS + JS puro · GitHub Pages'
+      },
+      fr: {
+        sub: 'Devine le personnage du jour grâce aux indices d\'attributs.',
+        dinoT: 'Dinosaures', dinoD: 'Poids, époque, continent, type... et indices supplémentaires.',
+        dcT: 'DC Comics', dcD: 'Alignement, pouvoirs, première apparition, genre...',
+        play: 'Jouer →', foot: 'HTML + CSS + JS pur · GitHub Pages'
+      },
+      en: {
+        sub: 'Guess the character of the day using attribute clues.',
+        dinoT: 'Dinosaurs', dinoD: 'Weight, era, continent, type... plus extra hints if you fail.',
+        dcT: 'DC Comics', dcD: 'Alignment, powers, first appearance, gender...',
+        play: 'Play →', foot: 'Pure HTML + CSS + JS · GitHub Pages'
+      }
+    }[lang];
+
+    document.getElementById('home-sub').textContent = T.sub;
+    document.getElementById('home-dino-title').textContent = T.dinoT;
+    document.getElementById('home-dino-desc').textContent = T.dinoD;
+    document.getElementById('home-dc-title').textContent = T.dcT;
+    document.getElementById('home-dc-desc').textContent = T.dcD;
+    document.getElementById('home-dino-cta').textContent = T.play;
+    document.getElementById('home-dc-cta').textContent = T.play;
+    document.getElementById('home-foot').textContent = T.foot;
+
+    var wrap = document.getElementById('lang-toggle-home');
+    wrap.className = 'lang-toggle';
+    wrap.innerHTML = ['es','fr','en'].map(function(l){
+      return '<button data-l="'+l+'" class="'+(lang===l?'active':'')+'">'+l.toUpperCase()+'</button>';
+    }).join('');
+    wrap.querySelectorAll('button').forEach(function(b){
+      b.onclick = function(){
+        localStorage.setItem(LANG_KEY, b.dataset.l);
+        location.reload();
+      };
+    });
+  })();
+  </script>
 </body>
 </html>

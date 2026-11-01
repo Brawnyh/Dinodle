@@ -195,17 +195,16 @@
     document.getElementById('stats-btn').onclick = () => openStatsModal();
   }
 
-  function ensureLangToggle(){
-    if (document.getElementById('lang-toggle-widget')) return;
-    const w = document.getElementById('lang-toggle-widget');
-    if (!w) return;
-    w.innerHTML = ['es','fr','en'].map(l =>
-      '<button data-l="'+l+'" class="'+(LANG===l?'active':'')+'">'+l.toUpperCase()+'</button>'
-    ).join('');
-    w.querySelectorAll('button').forEach(b => {
-      b.onclick = () => { setLang(b.dataset.l); location.reload(); };
-    });
-  }
+function ensureLangToggle(){
+  const w = document.getElementById('lang-toggle-widget');
+  if (!w) return;
+  w.innerHTML = ['es','fr','en'].map(l =>
+    '<button data-l="'+l+'" class="'+(LANG===l?'active':'')+'">'+l.toUpperCase()+'</button>'
+  ).join('');
+  w.querySelectorAll('button').forEach(b => {
+    b.onclick = () => { setLang(b.dataset.l); location.reload(); };
+  });
+}
 
   function openStatsModal(historyKey){
     let modal = document.getElementById('stats-modal');
