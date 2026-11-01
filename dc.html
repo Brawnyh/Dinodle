@@ -3,28 +3,25 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>🦇 Wordle DC</title>
+<title>Wordle DC</title>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body class="theme-dc">
   <nav class="topbar">
-    <a href="index.html">← Inicio</a>
-    <h1>🦇 Wordle DC</h1>
+    <a href="index.html" id="back-btn">← Inicio</a>
+    <h1 id="page-title">Wordle DC</h1>
+    <div id="lang-toggle-widget"></div>
+    <div id="stats-widget"></div>
   </nav>
   <main>
     <div id="game"></div>
     <details class="help">
-      <summary>¿Cómo se juega? / Leyenda</summary>
-      <ul>
-        <li><span class="sw correct"></span><b>Verde</b>: coincide con el personaje secreto</li>
-        <li><span class="sw close"></span><b>Amarillo</b>: año de primera aparición cercano (≤3 años)</li>
-        <li><span class="sw wrong"></span><b>Gris</b>: no coincide. Flecha ⬆️/⬇️ = año más reciente o más antiguo</li>
-      </ul>
-      <p><b>Pistas:</b> intento 3 → silueta · intento 5 → primera aparición exacta · intento 15 → nombre revelado.</p>
-      <p>Escribe el nombre del personaje (o su identidad secreta). Solo se aceptan los de la base de datos.</p>
+      <summary id="help-title">Cómo se juega</summary>
+      <ul id="help-list"></ul>
+      <p id="help-hints"></p>
     </details>
   </main>
-  <script src="engine.js"></script>
+  <script src="engine-dc.js"></script>
   <script src="dc.js"></script>
 </body>
 </html>
