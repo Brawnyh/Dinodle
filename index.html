@@ -3,77 +3,31 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Wordle Dino & DC</title>
+<title>Dinodle</title>
 <link rel="stylesheet" href="styles.css">
 </head>
-<body class="home">
-  <div id="lang-toggle-home"></div>
-  <main class="home-wrap">
-    <h1 class="home-title">Wordle <span class="grad">Dino</span> & DC</h1>
-    <p class="home-sub" id="home-sub">Adivina el personaje del día usando pistas de atributos.</p>
-
-    <div class="cards">
-      <a class="card card-dino" href="dinos.html">
-        <h2 id="home-dino-title">Dinosaurios</h2>
-        <p id="home-dino-desc">Peso, época, continente, tipo... y pistas extra al fallar.</p>
-        <span class="card-cta" id="home-dino-cta">Jugar →</span>
-      </a>
-      <a class="card card-dc" href="dc.html">
-        <h2 id="home-dc-title">DC Comics</h2>
-        <p id="home-dc-desc">Alineación, poderes, primera aparición, género...</p>
-        <span class="card-cta" id="home-dc-cta">Jugar →</span>
-      </a>
+<body>
+  <nav class="topbar">
+    <h1>🦕 Dinodle</h1>
+    <div class="mode-switch" role="group" aria-label="Difficulty">
+      <a href="?mode=normal" data-mode="normal">Normal</a>
+      <a href="?mode=easy" data-mode="easy">Easy</a>
     </div>
-
-    <p class="home-foot" id="home-foot">HTML + CSS + JS puro · GitHub Pages</p>
+  </nav>
+  <main>
+    <div id="game"></div>
+    <details class="help">
+      <summary>¿Cómo se juega? / Leyenda de colores</summary>
+      <ul>
+        <li><span class="sw correct"></span><b>Verde</b>: coincide con el dinosaurio secreto</li>
+        <li><span class="sw close"></span><b>Amarillo</b>: cerca (peso/longitud) o año próximo</li>
+        <li><span class="sw wrong"></span><b>Gris</b>: no coincide. La flecha indica si debes subir ⬆️ o bajar ⬇️</li>
+      </ul>
+      <p><b>Pistas automáticas:</b> intento 3 → silueta · intento 5 → descubridor y año · intento 12 → descripción.</p>
+      <p>Escribe el nombre científico (o alias como "T-Rex"). Solo se aceptan dinosaurios de la base de datos.</p>
+    </details>
   </main>
-  <script>
-  (function(){
-    var LANG_KEY = 'wordle_lang_v7';
-    var lang = localStorage.getItem(LANG_KEY) || 'es';
-    document.documentElement.lang = lang;
-    var T = {
-      es: {
-        sub: 'Adivina el personaje del día usando pistas de atributos.',
-        dinoT: 'Dinosaurios', dinoD: 'Peso, época, continente, tipo... y pistas extra al fallar.',
-        dcT: 'DC Comics', dcD: 'Alineación, poderes, primera aparición, género...',
-        play: 'Jugar →', foot: 'HTML + CSS + JS puro · GitHub Pages'
-      },
-      fr: {
-        sub: 'Devine le personnage du jour grâce aux indices d\'attributs.',
-        dinoT: 'Dinosaures', dinoD: 'Poids, époque, continent, type... et indices supplémentaires.',
-        dcT: 'DC Comics', dcD: 'Alignement, pouvoirs, première apparition, genre...',
-        play: 'Jouer →', foot: 'HTML + CSS + JS pur · GitHub Pages'
-      },
-      en: {
-        sub: 'Guess the character of the day using attribute clues.',
-        dinoT: 'Dinosaurs', dinoD: 'Weight, era, continent, type... plus extra hints if you fail.',
-        dcT: 'DC Comics', dcD: 'Alignment, powers, first appearance, gender...',
-        play: 'Play →', foot: 'Pure HTML + CSS + JS · GitHub Pages'
-      }
-    }[lang];
-
-    document.getElementById('home-sub').textContent = T.sub;
-    document.getElementById('home-dino-title').textContent = T.dinoT;
-    document.getElementById('home-dino-desc').textContent = T.dinoD;
-    document.getElementById('home-dc-title').textContent = T.dcT;
-    document.getElementById('home-dc-desc').textContent = T.dcD;
-    document.getElementById('home-dino-cta').textContent = T.play;
-    document.getElementById('home-dc-cta').textContent = T.play;
-    document.getElementById('home-foot').textContent = T.foot;
-
-    var wrap = document.getElementById('lang-toggle-home');
-    wrap.className = 'lang-toggle';
-    wrap.innerHTML = ['es','fr','en'].map(function(l){
-      return '<button data-l="'+l+'" class="'+(lang===l?'active':'')+'">'+l.toUpperCase()+'</button>';
-    }).join('');
-    wrap.querySelectorAll('button').forEach(function(b){
-      b.onclick = function(){
-        localStorage.setItem(LANG_KEY, b.dataset.l);
-        location.reload();
-      };
-    });
-  })();
-  </script>
+  <script src="engine.js"></script>
+  <script src="dinos.js"></script>
 </body>
 </html>

@@ -1,10 +1,19 @@
+// Easy mode (?mode=easy): only the 25 most famous dinosaurs (tagged "easy" in
+// the data), with its own daily puzzle, saved game and stats.
+const EASY = new URLSearchParams(location.search).get('mode') === 'easy';
+document.querySelectorAll('.mode-switch a').forEach(a =>
+  a.classList.toggle('active', (a.dataset.mode === 'easy') === EASY));
+
 fetch('data/dinos.json')
   .then(r => r.json())
-  .then(data => {
+  .then(all => {
+    const easyList = all.filter(d => d.easy);
+    // Fallback: a stale cached data file without "easy" tags would leave Easy empty.
+    const data = EASY && easyList.length ? easyList : all;
     createGame({
       data,
-      gameId: 'dino',
-      storageKey: 'dino-daily-v5',
+      gameId: EASY ? 'dinoEasy' : 'dino',
+      storageKey: EASY ? 'dino-easy-daily-v1' : 'dino-daily-v5',
       maxAttempts: 20,
       wikiLang: 'en',
       wikiUrlFor: item =>

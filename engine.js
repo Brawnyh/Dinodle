@@ -15,26 +15,55 @@
     if (html != null) n.innerHTML = html;
     return n;
   }
-  function todayStamp() {
-    const d = new Date();
-    return d.getFullYear() + '-' +
-      String(d.getMonth() + 1).padStart(2, '0') + '-' +
-      String(d.getDate()).padStart(2, '0');
+  /* ================= DAY (Europe/Madrid) =================
+     The daily puzzle changes at midnight Madrid time for everyone,
+     wherever the player is. */
+  const DAY_TZ = 'Europe/Madrid';
+  function madridParts(date) {
+    const parts = {};
+    new Intl.DateTimeFormat('en-GB', {
+      timeZone: DAY_TZ, hourCycle: 'h23',
+      year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit', second: '2-digit'
+    }).formatToParts(date || new Date()).forEach(function (p) { parts[p.type] = p.value; });
+    return {
+      y: +parts.year, m: +parts.month, d: +parts.day,
+      h: +parts.hour, min: +parts.minute, s: +parts.second
+    };
+  }
+  function stampFromDayNumber(n) {
+    const d = new Date(n * 86400000);
+    return d.getUTCFullYear() + '-' +
+      String(d.getUTCMonth() + 1).padStart(2, '0') + '-' +
+      String(d.getUTCDate()).padStart(2, '0');
+  }
+  // Days since 1970-01-01 counted on the Madrid calendar.
+  function dayNumber() {
+    const p = madridParts();
+    return Math.floor(Date.UTC(p.y, p.m - 1, p.d) / 86400000);
+  }
+  function todayStamp() { return stampFromDayNumber(dayNumber()); }
+  function yesterdayStamp() { return stampFromDayNumber(dayNumber() - 1); }
+
+  function safeGet(key) {
+    try { return localStorage.getItem(key); } catch (e) { return null; }
+  }
+  function safeSet(key, val) {
+    try { localStorage.setItem(key, val); } catch (e) {}
   }
 
   /* ================= STATS LOCALES ================= */
   const STATS_KEY = 'wordle_stats_v5';
+  const STAT_MODES = ['dino', 'dinoEasy'];
+  function emptyStat() { return { played: 0, won: 0, streak: 0, maxStreak: 0, lastDate: null }; }
   function getStats() {
-    try {
-      const s = JSON.parse(localStorage.getItem(STATS_KEY) || 'null');
-      if (s && s.dino && s.dc) return s;
-    } catch (e) {}
-    return {
-      dino: { played: 0, won: 0, streak: 0, maxStreak: 0, lastDate: null },
-      dc:   { played: 0, won: 0, streak: 0, maxStreak: 0, lastDate: null }
-    };
+    let s = null;
+    try { s = JSON.parse(safeGet(STATS_KEY) || 'null'); } catch (e) {}
+    if (!s || typeof s !== 'object') s = {};
+    STAT_MODES.forEach(function (k) { if (!s[k]) s[k] = emptyStat(); });
+    return s;
   }
-  function saveStats(s) { localStorage.setItem(STATS_KEY, JSON.stringify(s)); }
+  function saveStats(s) { safeSet(STATS_KEY, JSON.stringify(s)); }
 
   function recordGame(gameId, won, dateStr) {
     const all = getStats();
@@ -44,7 +73,8 @@
     s.played++;
     if (won) {
       s.won++;
-      s.streak = (s.streak || 0) + 1;
+      // A streak only continues if the previous game was yesterday.
+      s.streak = (s.lastDate === yesterdayStamp() ? (s.streak || 0) : 0) + 1;
       if (s.streak > (s.maxStreak || 0)) s.maxStreak = s.streak;
     } else { s.streak = 0; }
     s.lastDate = dateStr;
@@ -56,14 +86,14 @@
     const w = document.getElementById('stats-widget');
     if (!w) return;
     const all = getStats();
-    const d = all.dino, dc = all.dc;
-    const total = d.played + dc.played;
-    const won = d.won + dc.won;
+    const d = all.dino, e = all.dinoEasy;
+    const total = d.played + e.played;
+    const won = d.won + e.won;
     const pct = total ? Math.round((won / total) * 100) : 0;
     w.innerHTML =
       '<button type="button" class="stats-btn" id="stats-btn">' +
         '<span class="stats-line"><b>🦖</b> ' + d.won + '/' + d.played +
-        ' <span class="stats-sep">·</span> <b>🦇</b> ' + dc.won + '/' + dc.played +
+        ' <span class="stats-sep">·</span> <b>🦕</b> ' + e.won + '/' + e.played +
         ' <span class="stats-sep">·</span> <b>' + pct + '%</b></span>' +
       '</button>';
     document.getElementById('stats-btn').onclick = openStatsModal;
@@ -98,7 +128,7 @@
       });
       modal.querySelector('#stats-reset').onclick = () => {
         if (confirm('¿Borrar todas tus estadísticas locales? Esto no afecta al juego de hoy.')) {
-          localStorage.removeItem(STATS_KEY);
+          try { localStorage.removeItem(STATS_KEY); } catch (e) {}
           fillStatsGrid(modal);
           renderStatsWidget();
         }
@@ -125,11 +155,11 @@
         '<div class="stats-card-row"><span>Racha máxima</span><b>' + (s.maxStreak || 0) + '</b></div>';
       grid.appendChild(wrap);
     }
-    card('🦖', 'Dinosaurios', all.dino);
-    card('🦇', 'DC Comics', all.dc);
+    card('🦖', 'Normal', all.dino);
+    card('🦕', 'Easy', all.dinoEasy);
 
-    const tp = all.dino.played + all.dc.played;
-    const tw = all.dino.won + all.dc.won;
+    const tp = all.dino.played + all.dinoEasy.played;
+    const tw = all.dino.won + all.dinoEasy.won;
     const tpct = tp ? Math.round((tw / tp) * 100) : 0;
     const total = el('div', 'stats-card stats-card-total');
     total.innerHTML =
@@ -141,8 +171,34 @@
   }
 
   /* ================= WIKI IMAGES ================= */
-  const imgCache = new Map();
+  /* Wikimedia only serves thumbnails at standard widths; other widths
+     (400, 600, 700, 800…) return HTTP 400. Snap to the largest allowed
+     width that does not exceed the requested size. */
+  const WIKI_WIDTHS = [250, 330, 500, 960];
+  function standardWidth(size) {
+    let w = WIKI_WIDTHS[0];
+    WIKI_WIDTHS.forEach(function (x) { if (x <= size) w = x; });
+    return w;
+  }
   function upscale(url, size) { return url ? url.replace(/\/(\d+)px-/, '/' + size + 'px-') : url; }
+
+  // Found image URLs are kept between visits so we don't hammer Wikipedia
+  // (it rate-limits with HTTP 429).
+  const IMG_CACHE_KEY = 'dinodle_img_cache_v1';
+  const imgCache = new Map();
+  (function loadImgCache() {
+    try {
+      const o = JSON.parse(safeGet(IMG_CACHE_KEY) || '{}');
+      Object.keys(o).forEach(function (k) { imgCache.set(k, o[k]); });
+    } catch (e) {}
+  })();
+  function rememberImage(key, url) {
+    imgCache.set(key, url);
+    if (!url) return; // only persist hits; misses are retried next visit
+    const o = {};
+    imgCache.forEach(function (v, k) { if (v) o[k] = v; });
+    safeSet(IMG_CACHE_KEY, JSON.stringify(o));
+  }
   function isJunk(src) {
     if (!src) return true;
     if (/\.svg(\?|$)/i.test(src)) return true;
@@ -158,14 +214,19 @@
       if (!r.ok) return null;
       const data = await r.json();
       if (data.type === 'disambiguation') return null;
-      let src = (data.thumbnail && data.thumbnail.source) ||
-                (data.originalimage && data.originalimage.source);
+      const orig = data.originalimage;
+      const thumb = data.thumbnail;
+      const src = (thumb && thumb.source) || (orig && orig.source);
       if (!src || isJunk(src)) return null;
-      return upscale(src, size || 500);
+      const w = standardWidth(size || 500);
+      // Never ask for a thumbnail wider than the original file.
+      if (orig && orig.source && orig.width && orig.width <= w) return orig.source;
+      if (thumb && thumb.source) return upscale(thumb.source, w);
+      return src;
     } catch (e) { return null; }
   }
   async function fetchWikiImage(item, lang, size) {
-    const key = item.name + '|' + lang + '|' + (size || 500);
+    const key = item.name + '|' + lang + '|' + standardWidth(size || 500);
     if (imgCache.has(key)) return imgCache.get(key);
     const cands = [];
     if (item.wikiName) cands.push(item.wikiName);
@@ -180,15 +241,15 @@
     const list = cands.filter(c => { const k = (c||'').toLowerCase(); if (!k || seen.has(k)) return false; seen.add(k); return true; });
     for (let i = 0; i < list.length; i++) {
       const s = await tryFetchImage(list[i], lang, size);
-      if (s) { imgCache.set(key, s); return s; }
+      if (s) { rememberImage(key, s); return s; }
     }
     if (lang !== 'en') {
       for (let i = 0; i < list.length; i++) {
         const s = await tryFetchImage(list[i], 'en', size);
-        if (s) { imgCache.set(key, s); return s; }
+        if (s) { rememberImage(key, s); return s; }
       }
     }
-    imgCache.set(key, null);
+    rememberImage(key, null);
     return null;
   }
 
@@ -215,7 +276,8 @@
     let out = text;
     unique.forEach(n => {
       const esc = n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      const re = new RegExp(esc, 'gi');
+      // Whole words only, so short names don't cut into ordinary words.
+      const re = new RegExp('(?<![\\p{L}\\p{N}])' + esc + '(?![\\p{L}\\p{N}])', 'giu');
       out = out.replace(re, m => '─'.repeat(Math.min(m.length, 10)));
     });
     return out;
@@ -223,13 +285,15 @@
 
   /* ================= COUNTDOWN ================= */
   function startCountdown(node) {
+    const startDay = dayNumber();
     function tick() {
-      const now = new Date();
-      const next = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1);
-      const diff = Math.max(0, next - now.getTime());
-      const h = Math.floor(diff / 3600000);
-      const m = Math.floor((diff % 3600000) / 60000);
-      const s = Math.floor((diff % 60000) / 1000);
+      // A new puzzle is out: reload so the player gets it.
+      if (dayNumber() !== startDay) { location.reload(); return; }
+      const p = madridParts();
+      const left = Math.max(0, 86400 - (p.h * 3600 + p.min * 60 + p.s));
+      const h = Math.floor(left / 3600);
+      const m = Math.floor((left % 3600) / 60);
+      const s = left % 60;
       node.innerHTML = '⏳ Próximo en <b>' +
         String(h).padStart(2, '0') + ':' +
         String(m).padStart(2, '0') + ':' +
@@ -282,7 +346,7 @@
       target: null, guesses: [], attempts: 0,
       over: false, won: false, unlocked: {}, practice: false
     };
-    const dailyIndex = Math.floor(Date.now() / 86400000) % data.length;
+    const dailyIndex = dayNumber() % data.length;
 
     let inputEl, formEl, msgEl, boardBody, counterEl, hintsEl, bannerEl,
         acListEl, acTimer;
@@ -470,7 +534,7 @@
 
       const manual = item.silhouetteUrl || item.imageUrl;
       if (manual) { renderModalImage(imgWrap, manual, item); return; }
-      fetchWikiImage(item, wikiLang, 700).then(function (url) {
+      fetchWikiImage(item, wikiLang, 500).then(function (url) {
         if (url) renderModalImage(imgWrap, url, item);
         else imgWrap.innerHTML = '<div class="modal-emoji">' + (item.emoji || '🖼️') + '</div>';
       });
@@ -521,7 +585,7 @@
               if (out.imageSrc) {
                 loadSilhouette(wrap, out.imageSrc, true);
               } else {
-                fetchWikiImage(state.target, out.imageLang || wikiLang, 400).then(function (url) {
+                fetchWikiImage(state.target, out.imageLang || wikiLang, 330).then(function (url) {
                   if (url) loadSilhouette(wrap, url, false);
                 });
               }
@@ -559,17 +623,15 @@
 
     function save() {
       if (state.practice) return;
-      try {
-        localStorage.setItem(storageKey, JSON.stringify({
-          date: todayStamp(), target: state.target.name,
-          guesses: state.guesses, attempts: state.attempts,
-          over: state.over, won: state.won, unlocked: state.unlocked
-        }));
-      } catch (e) {}
+      safeSet(storageKey, JSON.stringify({
+        date: todayStamp(), target: state.target.name,
+        guesses: state.guesses, attempts: state.attempts,
+        over: state.over, won: state.won, unlocked: state.unlocked
+      }));
     }
     function load() {
       let saved = null;
-      try { saved = JSON.parse(localStorage.getItem(storageKey) || 'null'); } catch (e) {}
+      try { saved = JSON.parse(safeGet(storageKey) || 'null'); } catch (e) {}
       if (saved && saved.date === todayStamp()) {
         const t = data.find(function (d) { return d.name === saved.target; });
         if (t) {
