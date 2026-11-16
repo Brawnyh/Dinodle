@@ -4,6 +4,9 @@
 (function (global) {
   'use strict';
 
+  // UI text comes from i18n.js (falls back to the key if it is not loaded).
+  function T(k, v) { return global.I18N ? global.I18N.t(k, v) : k; }
+
   function normalize(s) {
     return (s || '').toString().toLowerCase()
       .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
@@ -116,10 +119,10 @@
       modal.id = 'stats-modal';
       modal.innerHTML =
         '<div class="modal stats-modal">' +
-          '<button class="modal-close" type="button" aria-label="Cerrar">×</button>' +
-          '<h2 class="stats-title">📊 Mis estadísticas</h2>' +
+          '<button class="modal-close" type="button" aria-label="' + T('close') + '">×</button>' +
+          '<h2 class="stats-title">' + T('stats_title') + '</h2>' +
           '<div class="stats-grid" id="stats-grid"></div>' +
-          '<button class="stats-reset" id="stats-reset" type="button">Reiniciar estadísticas</button>' +
+          '<button class="stats-reset" id="stats-reset" type="button">' + T('stats_reset') + '</button>' +
         '</div>';
       document.body.appendChild(modal);
       modal.querySelector('.modal-close').onclick = () => modal.classList.remove('show');
@@ -127,7 +130,7 @@
         if (e.target === modal) modal.classList.remove('show');
       });
       modal.querySelector('#stats-reset').onclick = () => {
-        if (confirm('¿Borrar todas tus estadísticas locales? Esto no afecta al juego de hoy.')) {
+        if (confirm(T('stats_reset_confirm'))) {
           try { localStorage.removeItem(STATS_KEY); } catch (e) {}
           fillStatsGrid(modal);
           renderStatsWidget();
@@ -148,25 +151,25 @@
       const wrap = el('div', 'stats-card');
       wrap.innerHTML =
         '<div class="stats-card-head"><span>' + emoji + '</span> ' + label + '</div>' +
-        '<div class="stats-card-row"><span>Jugadas</span><b>' + s.played + '</b></div>' +
-        '<div class="stats-card-row"><span>Ganadas</span><b>' + s.won + '</b></div>' +
-        '<div class="stats-card-row"><span>% victorias</span><b>' + pct + '%</b></div>' +
-        '<div class="stats-card-row"><span>Racha actual</span><b>' + (s.streak || 0) + '</b></div>' +
-        '<div class="stats-card-row"><span>Racha máxima</span><b>' + (s.maxStreak || 0) + '</b></div>';
+        '<div class="stats-card-row"><span>' + T('played') + '</span><b>' + s.played + '</b></div>' +
+        '<div class="stats-card-row"><span>' + T('won') + '</span><b>' + s.won + '</b></div>' +
+        '<div class="stats-card-row"><span>' + T('win_pct') + '</span><b>' + pct + '%</b></div>' +
+        '<div class="stats-card-row"><span>' + T('streak') + '</span><b>' + (s.streak || 0) + '</b></div>' +
+        '<div class="stats-card-row"><span>' + T('max_streak') + '</span><b>' + (s.maxStreak || 0) + '</b></div>';
       grid.appendChild(wrap);
     }
-    card('🦖', 'Normal', all.dino);
-    card('🦕', 'Easy', all.dinoEasy);
+    card('🦖', T('mode_normal'), all.dino);
+    card('🦕', T('mode_easy'), all.dinoEasy);
 
     const tp = all.dino.played + all.dinoEasy.played;
     const tw = all.dino.won + all.dinoEasy.won;
     const tpct = tp ? Math.round((tw / tp) * 100) : 0;
     const total = el('div', 'stats-card stats-card-total');
     total.innerHTML =
-      '<div class="stats-card-head"><span>🏆</span> Total</div>' +
-      '<div class="stats-card-row"><span>Jugadas</span><b>' + tp + '</b></div>' +
-      '<div class="stats-card-row"><span>Ganadas</span><b>' + tw + '</b></div>' +
-      '<div class="stats-card-row"><span>% victorias</span><b>' + tpct + '%</b></div>';
+      '<div class="stats-card-head"><span>🏆</span> ' + T('total') + '</div>' +
+      '<div class="stats-card-row"><span>' + T('played') + '</span><b>' + tp + '</b></div>' +
+      '<div class="stats-card-row"><span>' + T('won') + '</span><b>' + tw + '</b></div>' +
+      '<div class="stats-card-row"><span>' + T('win_pct') + '</span><b>' + tpct + '%</b></div>';
     grid.appendChild(total);
   }
 
@@ -294,7 +297,7 @@
       const h = Math.floor(left / 3600);
       const m = Math.floor((left % 3600) / 60);
       const s = left % 60;
-      node.innerHTML = '⏳ Próximo en <b>' +
+      node.innerHTML = T('next_in') + ' <b>' +
         String(h).padStart(2, '0') + ':' +
         String(m).padStart(2, '0') + ':' +
         String(s).padStart(2, '0') + '</b>';
@@ -362,7 +365,7 @@
       root.innerHTML = '';
 
       const head = el('div', 'game-head');
-      head.appendChild(el('div', 'counter', 'Intento <b id="attempts">0</b> de ' + maxAttempts));
+      head.appendChild(el('div', 'counter', T('attempt_html', { max: maxAttempts })));
       const cd = el('div', 'next-puzzle');
       head.appendChild(cd);
       root.appendChild(head);
@@ -377,7 +380,7 @@
       const acWrap = el('div', 'autocomplete-wrap');
       inputEl = el('input');
       inputEl.type = 'text';
-      inputEl.placeholder = cfg.placeholder || 'Escribe un nombre...';
+      inputEl.placeholder = cfg.placeholder || '';
       inputEl.autocomplete = 'off';
       inputEl.autocapitalize = 'off';
       inputEl.spellcheck = false;
@@ -385,7 +388,7 @@
       acWrap.appendChild(inputEl);
       acWrap.appendChild(acListEl);
       formEl.appendChild(acWrap);
-      const btn = el('button', null, 'Probar');
+      const btn = el('button', null, T('guess'));
       btn.type = 'submit';
       formEl.appendChild(btn);
       root.appendChild(formEl);
@@ -397,7 +400,7 @@
       const table = el('table', 'board');
       const thead = el('thead');
       const trh = el('tr');
-      trh.appendChild(el('th', 'col-name', 'Nombre'));
+      trh.appendChild(el('th', 'col-name', T('col_name')));
       attributes.forEach(function (a) { trh.appendChild(el('th', null, a.label)); });
       thead.appendChild(trh);
       table.appendChild(thead);
@@ -409,7 +412,7 @@
       bannerEl = el('div', 'banner');
       root.appendChild(bannerEl);
 
-      const p = el('button', 'practice', '🎲 Jugar otro (práctica)');
+      const p = el('button', 'practice', T('practice'));
       p.type = 'button';
       p.addEventListener('click', newPractice);
       root.appendChild(p);
@@ -428,11 +431,11 @@
       modal.id = 'reveal-modal';
       modal.innerHTML =
         '<div class="modal">' +
-          '<button class="modal-close" type="button" aria-label="Cerrar">×</button>' +
-          '<div class="modal-img-wrap"><div class="modal-img-spinner">Cargando imagen…</div></div>' +
+          '<button class="modal-close" type="button" aria-label="' + T('close') + '">×</button>' +
+          '<div class="modal-img-wrap"><div class="modal-img-spinner">' + T('loading_img') + '</div></div>' +
           '<h2 class="modal-title"></h2>' +
           '<p class="modal-desc"></p>' +
-          '<a class="modal-link" target="_blank" rel="noopener">Ver en Wikipedia →</a>' +
+          '<a class="modal-link" target="_blank" rel="noopener">' + T('view_wiki') + '</a>' +
         '</div>';
       root.appendChild(modal);
       modal.querySelector('.modal-close').addEventListener('click', function () {
@@ -486,13 +489,13 @@
       if (!raw) return;
       const item = findItem(raw);
       if (!item) {
-        showMsg('❌ "' + raw + '" no está en la lista. Empieza a escribir y elige una sugerencia.', 'bad');
+        showMsg(T('not_in_list', { raw: raw }), 'bad');
         inputEl.classList.add('shake');
         setTimeout(function () { inputEl.classList.remove('shake'); }, 400);
         return;
       }
       if (state.guesses.indexOf(item.name) !== -1) {
-        showMsg('⚠️ Ya probaste con ' + item.name + '.', 'bad');
+        showMsg(T('already', { name: item.name }), 'bad');
         return;
       }
       state.guesses.push(item.name);
@@ -510,8 +513,8 @@
     function finish() {
       bannerEl.className = 'banner show ' + (state.won ? 'win' : 'lose');
       bannerEl.innerHTML = state.won
-        ? '🎉 ¡Correcto! Era <b>' + state.target.name + '</b> — ' + state.attempts + ' intentos.'
-        : '💀 Se acabaron los ' + maxAttempts + ' intentos. Era <b>' + state.target.name + '</b>.';
+        ? T('win', { name: state.target.name, n: state.attempts })
+        : T('lose', { name: state.target.name, max: maxAttempts });
       inputEl.disabled = true;
       const b = formEl.querySelector('button');
       if (b) b.disabled = true;
@@ -525,11 +528,11 @@
       const title = modal.querySelector('.modal-title');
       const desc = modal.querySelector('.modal-desc');
       const link = modal.querySelector('.modal-link');
-      imgWrap.innerHTML = '<div class="modal-img-spinner">Cargando imagen…</div>';
+      imgWrap.innerHTML = '<div class="modal-img-spinner">' + T('loading_img') + '</div>';
       title.textContent = (won ? '🎉 ' : '💀 ') + item.name;
       desc.textContent = item.description || item.realName || '';
       link.href = wikiUrlFor(item);
-      link.textContent = 'Ver en Wikipedia →';
+      link.textContent = T('view_wiki');
       modal.classList.add('show');
 
       const manual = item.silhouetteUrl || item.imageUrl;
@@ -540,7 +543,7 @@
       });
     }
     function renderModalImage(wrap, src, item) {
-      wrap.innerHTML = '<div class="modal-img-spinner">Cargando imagen…</div>';
+      wrap.innerHTML = '<div class="modal-img-spinner">' + T('loading_img') + '</div>';
       const img = document.createElement('img');
       img.className = 'modal-img';
       img.alt = item.name;
@@ -591,7 +594,7 @@
               }
             }
           } else {
-            body.textContent = 'Se desbloquea en el intento ' + h.at;
+            body.textContent = T('unlock_at', { n: h.at });
           }
           card.appendChild(body);
           hintsEl.appendChild(card);
@@ -602,7 +605,7 @@
     function loadSilhouette(wrap, src, isReal) {
       const img = document.createElement('img');
       img.className = 'silhouette-img' + (isReal ? ' is-real' : ' is-photo');
-      img.alt = 'silueta';
+      img.alt = T('silhouette_alt');
       lockImage(img);
       img.onload = function () { wrap.innerHTML = ''; wrap.appendChild(img); };
       img.onerror = function () {};

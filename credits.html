@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Image credits · Dinodle</title>
+<meta name="description" content="Credits and licences for the dinosaur silhouettes and images used in Dinodle.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="./">← Dinodle</a>
+    <h1>Image credits</h1>
+  </nav>
+  <main class="credits">
+    <p>The silhouettes in Dinodle come from <a href="https://www.phylopic.org/" rel="noopener">PhyloPic</a>.
+      We only use images whose licence allows commercial use: public domain (CC0 / Public Domain Mark),
+      Creative Commons Attribution (CC BY) and, in a few cases, CC BY-SA. The files are shown unchanged;
+      the site only recolours them for display. Thank you to every artist below.</p>
+    <p>The photos shown when a game ends are loaded from Wikipedia / Wikimedia Commons. Each one keeps
+      its own licence and author, listed on its Wikipedia page (use the “View on Wikipedia” link).</p>
+    <div style="overflow-x:auto"><table>
+      <thead><tr><th>Silhouette</th><th>Dinosaur</th><th>Artist</th><th>Licence</th><th>Source</th></tr></thead>
+      <tbody id="rows"><tr><td colspan="5">Loading…</td></tr></tbody>
+    </table></div>
+  </main>
+  <script>
+  (function () {
+    function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+    function licName(url) {
+      if (/publicdomain\/zero/.test(url)) return 'CC0 1.0';
+      if (/publicdomain\/mark/.test(url)) return 'Public Domain Mark';
+      var m = url.match(/licenses\/([a-z-]+)\/([\d.]+)/);
+      return m ? 'CC ' + m[1].toUpperCase() + ' ' + m[2] : url;
+    }
+    fetch('data/silhouette-credits.json').then(function (r) { return r.json(); }).then(function (c) {
+      var rows = Object.keys(c).sort().map(function (name) {
+        var x = c[name];
+        return '<tr><td><img src="' + esc(x.file) + '" alt="" loading="lazy"></td>' +
+          '<td><i>' + esc(name) + '</i>' + (x.depicts.toLowerCase() !== name.toLowerCase() ? '<br><small>(drawing of ' + esc(x.depicts) + ')</small>' : '') + '</td>' +
+          '<td>' + esc(x.author) + '</td>' +
+          '<td><a href="' + esc(x.license) + '" rel="noopener license">' + esc(licName(x.license)) + '</a></td>' +
+          '<td><a href="' + esc(x.source) + '" rel="noopener">PhyloPic</a></td></tr>';
+      });
+      document.getElementById('rows').innerHTML = rows.join('');
+    }).catch(function () {
+      document.getElementById('rows').innerHTML = '<tr><td colspan="5">Could not load the credits.</td></tr>';
+    });
+  })();
+  </script>
+</body>
+</html>

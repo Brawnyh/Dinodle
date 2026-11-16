@@ -1,32 +1,39 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Dinodle</title>
+<title>Dinodle · Guess the daily dinosaur</title>
+<meta name="description" content="Dinodle is a free daily dinosaur guessing game. Guess the dinosaur of the day from its period, diet, size and continent. Normal and Easy modes, in English, French and Spanish.">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <nav class="topbar">
     <h1>🦕 Dinodle</h1>
-    <div class="mode-switch" role="group" aria-label="Difficulty">
-      <a href="?mode=normal" data-mode="normal">Normal</a>
-      <a href="?mode=easy" data-mode="easy">Easy</a>
+    <div class="mode-switch" role="group" data-i18n-aria="mode_label">
+      <a href="?mode=normal" data-mode="normal" data-i18n="mode_normal">Normal</a>
+      <a href="?mode=easy" data-mode="easy" data-i18n="mode_easy">Easy</a>
     </div>
+    <div id="lang-switch"></div>
   </nav>
   <main>
     <div id="game"></div>
     <details class="help">
-      <summary>¿Cómo se juega? / Leyenda de colores</summary>
+      <summary data-i18n="help_summary">How to play / Colour legend</summary>
       <ul>
-        <li><span class="sw correct"></span><b>Verde</b>: coincide con el dinosaurio secreto</li>
-        <li><span class="sw close"></span><b>Amarillo</b>: cerca (peso/longitud) o año próximo</li>
-        <li><span class="sw wrong"></span><b>Gris</b>: no coincide. La flecha indica si debes subir ⬆️ o bajar ⬇️</li>
+        <li><span class="sw correct"></span><span data-i18n="help_green"></span></li>
+        <li><span class="sw close"></span><span data-i18n="help_yellow"></span></li>
+        <li><span class="sw wrong"></span><span data-i18n="help_grey"></span></li>
       </ul>
-      <p><b>Pistas automáticas:</b> intento 3 → silueta · intento 5 → descubridor y año · intento 12 → descripción.</p>
-      <p>Escribe el nombre científico (o alias como "T-Rex"). Solo se aceptan dinosaurios de la base de datos.</p>
+      <p data-i18n="help_hints"></p>
+      <p data-i18n="help_names"></p>
+      <p data-i18n="help_easy"></p>
     </details>
+    <footer class="site-foot">
+      <a href="credits.html" data-i18n="credits_link">Image credits</a>
+    </footer>
   </main>
+  <script src="i18n.js"></script>
   <script src="engine.js"></script>
   <script src="dinos.js"></script>
 </body>
