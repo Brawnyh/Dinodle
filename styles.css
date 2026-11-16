@@ -84,7 +84,7 @@ main{max-width:1000px;margin:0 auto;padding:22px 16px 60px}
 .cell.close{background:var(--close);color:#1a1300}
 .cell.wrong{background:var(--wrong);color:#9aa5b1}
 .cell.name-cell{background:#1e2632;color:var(--text);text-align:left;min-width:140px;font-weight:700}
-.arrow{display:block;font-size:10px;opacity:.9;margin-top:2px}
+.arrow{display:block;font-size:15px;font-weight:900;line-height:1;margin-top:3px;opacity:.95}
 .banner{display:none;margin-top:18px;padding:16px 18px;border-radius:14px;font-size:15px;line-height:1.5}
 .banner.show{display:block;animation:pop .3s ease}
 .banner.win{background:rgba(46,160,67,.15);border:1px solid var(--correct)}
@@ -161,3 +161,68 @@ main{max-width:1000px;margin:0 auto;padding:22px 16px 60px}
 .credits td img{height:36px;width:auto;filter:invert(1)}
 .credits a{color:var(--accent)}
 .credits{overflow-x:auto}
+
+/* ===== Clues: compact token cards (silhouette = last clue, full width once bought) ===== */
+.hints{grid-template-columns:repeat(3,1fr)}
+@media(max-width:640px){.hints{grid-template-columns:1fr 1fr}.hint{padding:9px 11px}.hint-body{font-size:12.5px}}
+.hint.hint-last.unlocked{grid-column:1/-1}
+.hint.locked{opacity:.8}
+.muted{color:var(--muted)}
+.tokens-display .muted{font-size:11.5px}
+
+/* ===== Board: newest guess on top, cells flip in one after another ===== */
+.row-new .cell{animation:flipIn .45s ease both}
+.row-new .cell:nth-child(2){animation-delay:.08s}.row-new .cell:nth-child(3){animation-delay:.16s}
+.row-new .cell:nth-child(4){animation-delay:.24s}.row-new .cell:nth-child(5){animation-delay:.32s}
+.row-new .cell:nth-child(6){animation-delay:.40s}.row-new .cell:nth-child(7){animation-delay:.48s}
+@keyframes flipIn{from{transform:rotateX(90deg);opacity:0}to{transform:rotateX(0);opacity:1}}
+@media (prefers-reduced-motion:reduce){.row-new .cell{animation:none}}
+
+/* ===== Share ===== */
+.share-btn{display:inline-block;margin-left:10px;margin-top:6px;background:var(--accent);color:#04140a;border:0;padding:8px 14px;border-radius:10px;font-weight:800;font-size:13px;cursor:pointer;font-family:inherit}
+.share-btn:hover{filter:brightness(1.1)}
+
+/* ===== Footer and text pages ===== */
+.site-foot{margin:30px auto 18px;max-width:1000px;padding:0 16px;color:var(--muted)}
+.foot-links{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.foot-links span{opacity:.4}
+.site-foot p{margin:8px 0 0}
+.foot-sister{font-weight:700}
+.doc{max-width:760px;line-height:1.65}
+.doc h2{font-size:18px;margin:26px 0 8px}
+.doc a,.credits a{color:var(--accent)}
+.contact-big{font-size:22px;font-weight:800}
+.credit-locked{display:inline-block;width:56px;text-align:center;font-size:22px;opacity:.6}
+
+/* ===== Ad spaces =====
+   Hidden until ads are switched on (ads.js adds body.ads-on).
+   ?ads=preview shows dashed placeholders to see where ads will go.
+   Heights are reserved so the page doesn't jump when an ad loads. */
+.ad-slot{display:none}
+body.ads-on .ad-slot,body.ads-preview .ad-slot{display:flex;align-items:center;justify-content:center;margin:14px auto;overflow:hidden}
+.ad-banner{max-width:970px;width:100%;min-height:100px}
+@media(min-width:768px){.ad-banner{min-height:90px}}
+.ad-incontent{max-width:728px;width:100%;min-height:250px}
+.layout{display:block}
+
+body.ads-preview .ad-slot{border:2px dashed var(--muted);border-radius:12px;color:var(--muted);font-size:12px;font-weight:700;letter-spacing:.05em;opacity:.7}
+body.ads-preview .ad-slot::after{content:attr(data-label)}
+
+/* Gentle ads (marketing advice): no header banner on phones, so the game is
+   the first thing you see; the in-content unit sits ≥150px below the game
+   (AdSense game-page policy); no side rails. */
+@media(max-width:767px){body.ads-on .ad-banner,body.ads-preview .ad-banner{display:none}}
+body.ads-on .ad-incontent,body.ads-preview .ad-incontent{margin-top:150px}
+
+/* Support / donation button (shown only when config.js has a link) */
+.support-btn{display:inline-block;margin:8px 0 0 10px;padding:8px 14px;border-radius:10px;border:2px solid var(--accent);color:var(--accent);font-weight:800;font-size:13px;text-decoration:none}
+.support-btn:hover{background:var(--accent);color:#10260a}
+
+/* Result panel: the close button stays above the image, with its own space */
+.modal{padding-top:46px}
+.modal-close{z-index:5;top:8px;right:10px;width:38px;height:38px;border-radius:50%;background:rgba(0,0,0,.35);color:var(--text);display:flex;align-items:center;justify-content:center;padding:0}
+.modal-close:hover{background:rgba(0,0,0,.55)}
+@media(max-width:640px){
+  .modal{padding:44px 16px 18px}
+  .modal-img-wrap{height:200px}
+}

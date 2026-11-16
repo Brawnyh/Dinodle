@@ -85,6 +85,29 @@
     renderStatsWidget();
   }
 
+  /* ================= HISTORY / SOLVED ================= */
+  function getHistory(key) {
+    try { return JSON.parse(safeGet(key) || '[]'); } catch (e) { return []; }
+  }
+  function pushHistory(key, entry) {
+    const h = getHistory(key);
+    // One entry per daily game, even if the finished game is reopened.
+    if (h.some(function (x) { return x.date === entry.date && x.target === entry.target; })) return;
+    h.unshift(entry);
+    if (h.length > 60) h.length = 60;
+    safeSet(key, JSON.stringify(h));
+  }
+  // Dinosaurs this player has already found or seen revealed. The credits page
+  // only shows the silhouettes of these, so it can't be used to cheat.
+  const SOLVED_KEY = 'dinodle_solved_v1';
+  function markSolved(name) {
+    let s = [];
+    try { s = JSON.parse(safeGet(SOLVED_KEY) || '[]'); } catch (e) {}
+    if (s.indexOf(name) === -1) { s.push(name); safeSet(SOLVED_KEY, JSON.stringify(s)); }
+  }
+  // Puzzle #1 is 2026-11-16 (Madrid), the day Dinodle got its own site.
+  function puzzleNumber() { return dayNumber() - Math.floor(Date.UTC(2026, 10, 16) / 86400000) + 1; }
+
   function renderStatsWidget() {
     const w = document.getElementById('stats-widget');
     if (!w) return;
@@ -122,6 +145,8 @@
           '<button class="modal-close" type="button" aria-label="' + T('close') + '">×</button>' +
           '<h2 class="stats-title">' + T('stats_title') + '</h2>' +
           '<div class="stats-grid" id="stats-grid"></div>' +
+          '<h3 class="history-title">' + T('history_title') + '</h3>' +
+          '<div class="history-list" id="history-list"></div>' +
           '<button class="stats-reset" id="stats-reset" type="button">' + T('stats_reset') + '</button>' +
         '</div>';
       document.body.appendChild(modal);
@@ -131,7 +156,7 @@
       });
       modal.querySelector('#stats-reset').onclick = () => {
         if (confirm(T('stats_reset_confirm'))) {
-          try { localStorage.removeItem(STATS_KEY); } catch (e) {}
+          try { localStorage.removeItem(STATS_KEY); if (global.__historyKey) localStorage.removeItem(global.__historyKey); } catch (e) {}
           fillStatsGrid(modal);
           renderStatsWidget();
         }
@@ -171,6 +196,22 @@
       '<div class="stats-card-row"><span>' + T('won') + '</span><b>' + tw + '</b></div>' +
       '<div class="stats-card-row"><span>' + T('win_pct') + '</span><b>' + tpct + '%</b></div>';
     grid.appendChild(total);
+
+    const hist = modal.querySelector('#history-list');
+    const entries = global.__historyKey ? getHistory(global.__historyKey) : [];
+    hist.innerHTML = '';
+    if (!entries.length) { hist.appendChild(el('div', 'history-empty', T('history_empty'))); return; }
+    entries.forEach(function (e) {
+      const item = el('div', 'history-item ' + (e.won ? 'history-win' : 'history-lose'));
+      const main = el('div', 'history-main');
+      main.appendChild(el('b')).textContent = e.target;
+      main.appendChild(el('span', 'history-date')).textContent = ' ' + e.date;
+      item.appendChild(main);
+      item.appendChild(el('div', 'history-meta')).textContent =
+        (e.won ? T('won_label') : T('lost_label')) + ' · ' + e.attempts + ' · ' +
+        T('score') + ' ' + e.score + ' · 🦴 ' + e.tokensUsed;
+      hist.appendChild(item);
+    });
   }
 
   /* ================= WIKI IMAGES ================= */
@@ -311,7 +352,7 @@
     const data        = cfg.data;
     const attributes  = cfg.attributes;
     const hints       = cfg.hints || [];
-    const maxAttempts = cfg.maxAttempts || 20;
+    const maxAttempts = cfg.maxAttempts || 12;
     const storageKey  = cfg.storageKey || 'game';
     const gameId      = cfg.gameId || 'dino';
     const wikiLang    = cfg.wikiLang || 'es';
@@ -345,14 +386,33 @@
       return null;
     }
 
+    // Token system: a token is earned at each attempt listed in tokensAt; each
+    // clue costs one token. A clue with `requires` can only be bought after
+    // those clues (the silhouette is the last clue).
+    const tokensAt = (cfg.tokens && cfg.tokens.at) || [3, 6, 9];
+    const scoring = Object.assign({ base: 1000, attemptPenalty: 100, attemptInterval: 3, tokenPenalty: 150 }, cfg.scoring || {});
+    const historyKey = cfg.historyKey || (storageKey + '-history');
+    global.__historyKey = historyKey;
+
     const state = {
       target: null, guesses: [], attempts: 0,
-      over: false, won: false, unlocked: {}, practice: false
+      over: false, won: false, hintsBought: new Set(), practice: false
     };
     const dailyIndex = dayNumber() % data.length;
 
-    let inputEl, formEl, msgEl, boardBody, counterEl, hintsEl, bannerEl,
+    let inputEl, formEl, msgEl, boardBody, counterEl, scoreEl, tokensEl, hintsEl, bannerEl,
         acListEl, acTimer;
+
+    function tokensEarned() { return tokensAt.filter(function (t) { return state.attempts >= t; }).length; }
+    function tokensAvailable() { return Math.max(0, tokensEarned() - state.hintsBought.size); }
+    function nextTokenAt() { return tokensAt.find(function (t) { return state.attempts < t; }); }
+    function computeScore() {
+      if (state.over && !state.won) return 0;
+      const s = scoring.base
+        - Math.floor(state.attempts / scoring.attemptInterval) * scoring.attemptPenalty
+        - state.hintsBought.size * scoring.tokenPenalty;
+      return Math.max(0, s);
+    }
 
     build();
     ensureStatsWidget();
@@ -366,6 +426,10 @@
 
       const head = el('div', 'game-head');
       head.appendChild(el('div', 'counter', T('attempt_html', { max: maxAttempts })));
+      scoreEl = el('div', 'score-display');
+      head.appendChild(scoreEl);
+      tokensEl = el('div', 'tokens-display');
+      head.appendChild(tokensEl);
       const cd = el('div', 'next-puzzle');
       head.appendChild(cd);
       root.appendChild(head);
@@ -437,7 +501,8 @@
           '<p class="modal-desc"></p>' +
           '<a class="modal-link" target="_blank" rel="noopener">' + T('view_wiki') + '</a>' +
         '</div>';
-      root.appendChild(modal);
+      // On the page itself, so effects on the game area never move or hide it.
+      document.body.appendChild(modal);
       modal.querySelector('.modal-close').addEventListener('click', function () {
         modal.classList.remove('show');
       });
@@ -504,22 +569,77 @@
       showMsg('');
       if (item.name === state.target.name) { state.over = true; state.won = true; }
       else if (state.attempts >= maxAttempts) { state.over = true; }
-      hints.forEach(function (h) { if (state.attempts >= h.at) state.unlocked[h.id] = true; });
+      if (!state.over && tokensAt.indexOf(state.attempts) !== -1) showMsg(T('token_earned'), 'good');
       render();
       save();
-      if (state.over) finish();
+      if (state.over) {
+        finish();
+        global.dispatchEvent(new Event(state.won ? 'dinodle:win' : 'dinodle:lose'));
+      }
+    }
+
+    function buyHint(h) {
+      if (state.over || state.hintsBought.has(h.id) || !tokensAvailable()) return;
+      if (h.requires && !h.requires.every(function (r) { return state.hintsBought.has(r); })) return;
+      state.hintsBought.add(h.id);
+      save();
+      render();
     }
 
     function finish() {
+      const score = computeScore();
       bannerEl.className = 'banner show ' + (state.won ? 'win' : 'lose');
-      bannerEl.innerHTML = state.won
+      bannerEl.innerHTML = (state.won
         ? T('win', { name: state.target.name, n: state.attempts })
-        : T('lose', { name: state.target.name, max: maxAttempts });
+        : T('lose', { name: state.target.name, max: maxAttempts })) +
+        ' ' + T('final_score', { score: score });
+      if (!state.practice) {
+        const share = el('button', 'share-btn', T('share'));
+        share.type = 'button';
+        share.addEventListener('click', shareResult);
+        bannerEl.appendChild(share);
+      }
+      // Donation link after the game (never before playing).
+      const support = global.SITE && global.SITE.SUPPORT_URL;
+      if (support) {
+        const a = el('a', 'support-btn', T('support'));
+        a.href = support; a.target = '_blank'; a.rel = 'noopener';
+        bannerEl.appendChild(a);
+      }
       inputEl.disabled = true;
       const b = formEl.querySelector('button');
       if (b) b.disabled = true;
-      if (!state.practice) recordGame(gameId, state.won, todayStamp());
+      if (!state.practice) {
+        recordGame(gameId, state.won, todayStamp());
+        pushHistory(historyKey, {
+          date: todayStamp(), target: state.target.name, won: state.won,
+          attempts: state.attempts, score: score, tokensUsed: state.hintsBought.size
+        });
+        markSolved(state.target.name);
+      }
+      render();
       showRevealModal(state.target, state.won);
+    }
+
+    // Wordle-style result: one emoji row per guess, no names (no spoilers).
+    function shareResult() {
+      const icon = { correct: '🟩', close: '🟨', wrong: '⬛' };
+      const rows = state.guesses.map(function (name) {
+        const g = data.find(function (d) { return d.name === name; });
+        return attributes.map(function (a) { return icon[(a.compare(g, state.target) || {}).status] || '⬛'; }).join('');
+      });
+      const text = (cfg.shareTitle || 'Dinodle') + ' #' + puzzleNumber() +
+        ' ' + (state.won ? state.attempts + '/' + maxAttempts : 'X/' + maxAttempts) +
+        ' · ' + computeScore() + ' ' + T('pts') + (state.hintsBought.size ? ' · 🦴×' + state.hintsBought.size : '') +
+        '\n' + rows.join('\n') + '\n' + (cfg.shareUrl || location.origin + location.pathname);
+      const done = function () { showMsg(T('copied'), 'good'); };
+      if (navigator.share && /Mobi|Android/i.test(navigator.userAgent)) {
+        navigator.share({ text: text }).catch(function () {});
+      } else if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(done, function () { prompt(T('copy_this'), text); });
+      } else {
+        prompt(T('copy_this'), text);
+      }
     }
 
     function showRevealModal(item, won) {
@@ -561,22 +681,48 @@
     function render() {
       if (!state.target) return;
       counterEl.textContent = state.attempts;
+      // Lets the theme react to progress (the jungle turns volcanic).
+      global.dispatchEvent(new CustomEvent('dinodle:progress', {
+        detail: { attempts: state.attempts, max: maxAttempts, over: state.over, won: state.won }
+      }));
+      scoreEl.innerHTML = T('score') + ' <b>' + computeScore() + '</b>';
+      const avail = tokensAvailable();
+      tokensEl.innerHTML = '🦴 <b>' + avail + '</b>' +
+        (nextTokenAt() && !state.over ? ' <span class="muted">· ' + T('next_token', { n: nextTokenAt() }) + '</span>' : '');
 
       boardBody.innerHTML = '';
-      state.guesses.forEach(function (name) {
+      state.guesses.slice().reverse().forEach(function (name, i) {
         const g = data.find(function (d) { return d.name === name; });
-        if (g) boardBody.appendChild(buildRow(g));
+        if (g) {
+          const row = buildRow(g);
+          if (i === 0) row.classList.add('row-new');
+          boardBody.appendChild(row);
+        }
       });
 
       if (hintsEl) {
         hintsEl.innerHTML = '';
         hints.forEach(function (h) {
-          const unlocked = !!state.unlocked[h.id];
-          const card = el('div', 'hint ' + (unlocked ? 'unlocked' : 'locked'));
-          card.appendChild(el('div', 'hint-label', (unlocked ? '💡 ' : '🔒 ') + h.label));
+          const unlocked = state.hintsBought.has(h.id);
+          const ready = !h.requires || h.requires.every(function (r) { return state.hintsBought.has(r); });
+          const card = el('div', 'hint ' + (unlocked ? 'unlocked' : 'locked') + (h.last ? ' hint-last' : ''));
+          card.appendChild(el('div', 'hint-label', (unlocked ? '💡 ' : (ready ? '🦴 ' : '🔒 ')) + h.label));
           const body = el('div', 'hint-body');
 
-          if (unlocked) {
+          if (!unlocked) {
+            if (state.over) {
+              body.textContent = '—';
+            } else if (!ready) {
+              body.textContent = T('hint_requires');
+            } else if (avail > 0) {
+              const btn = el('button', 'hint-buy', T('buy_hint'));
+              btn.type = 'button';
+              btn.addEventListener('click', function () { buyHint(h); });
+              body.appendChild(btn);
+            } else {
+              body.textContent = nextTokenAt() ? T('next_token', { n: nextTokenAt() }) : T('no_tokens');
+            }
+          } else {
             const out = h.render(state.target);
             if (typeof out === 'string') {
               body.innerHTML = censorNames(out, state.target);
@@ -593,8 +739,6 @@
                 });
               }
             }
-          } else {
-            body.textContent = T('unlock_at', { n: h.at });
           }
           card.appendChild(body);
           hintsEl.appendChild(card);
@@ -629,7 +773,7 @@
       safeSet(storageKey, JSON.stringify({
         date: todayStamp(), target: state.target.name,
         guesses: state.guesses, attempts: state.attempts,
-        over: state.over, won: state.won, unlocked: state.unlocked
+        over: state.over, won: state.won, hintsBought: Array.from(state.hintsBought)
       }));
     }
     function load() {
@@ -643,7 +787,7 @@
           state.attempts = saved.attempts || 0;
           state.over = !!saved.over;
           state.won = !!saved.won;
-          state.unlocked = saved.unlocked || {};
+          state.hintsBought = new Set(saved.hintsBought || []);
           return;
         }
       }
@@ -656,11 +800,12 @@
       while (data.length > 1 && data[i].name === state.target.name);
       state.target = data[i];
       state.guesses = []; state.attempts = 0;
-      state.over = false; state.won = false; state.unlocked = {};
+      state.over = false; state.won = false; state.hintsBought = new Set();
       inputEl.disabled = false;
       const b = formEl.querySelector('button');
       if (b) b.disabled = false;
       bannerEl.className = 'banner'; bannerEl.innerHTML = '';
+      document.body.classList.remove('extinct');
       showMsg(''); render();
     }
   }

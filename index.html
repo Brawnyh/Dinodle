@@ -5,7 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dinodle · Guess the daily dinosaur</title>
 <meta name="description" content="Dinodle is a free daily dinosaur guessing game. Guess the dinosaur of the day from its period, diet, size and continent. Normal and Easy modes, in English, French and Spanish.">
+<link rel="canonical" href="https://dinodle.app/">
+<meta property="og:title" content="Dinodle · Guess the daily dinosaur">
+<meta property="og:description" content="A new secret dinosaur every day. How many guesses do you need?">
+<meta property="og:url" content="https://dinodle.app/">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🦕%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="themes.css">
 </head>
 <body>
   <nav class="topbar">
@@ -16,25 +23,31 @@
     </div>
     <div id="lang-switch"></div>
   </nav>
-  <main>
-    <div id="game"></div>
-    <details class="help">
-      <summary data-i18n="help_summary">How to play / Colour legend</summary>
-      <ul>
-        <li><span class="sw correct"></span><span data-i18n="help_green"></span></li>
-        <li><span class="sw close"></span><span data-i18n="help_yellow"></span></li>
-        <li><span class="sw wrong"></span><span data-i18n="help_grey"></span></li>
-      </ul>
-      <p data-i18n="help_hints"></p>
-      <p data-i18n="help_names"></p>
-      <p data-i18n="help_easy"></p>
-    </details>
-    <footer class="site-foot">
-      <a href="credits.html" data-i18n="credits_link">Image credits</a>
-    </footer>
-  </main>
+  <div class="ad-slot ad-banner" data-slot="top" data-label="AD · 728×90 (desktop only)"></div>
+  <div class="layout">
+    <main>
+      <div id="game"></div>
+      <details class="help">
+        <summary data-i18n="help_summary">How to play / Colour legend</summary>
+        <ul>
+          <li><span class="sw correct"></span><span data-i18n="help_green"></span></li>
+          <li><span class="sw close"></span><span data-i18n="help_yellow"></span></li>
+          <li><span class="sw wrong"></span><span data-i18n="help_grey"></span></li>
+        </ul>
+        <p data-i18n="help_hints"></p>
+        <p data-i18n="help_names"></p>
+        <p data-i18n="help_easy"></p>
+      </details>
+      <div class="ad-slot ad-incontent" data-slot="incontent" data-label="AD · 300×250 / responsive"></div>
+    </main>
+  </div>
+  <footer class="site-foot" id="site-foot"></footer>
+  <script src="config.js"></script>
+  <script src="theme.js"></script>
   <script src="i18n.js"></script>
   <script src="engine.js"></script>
   <script src="dinos.js"></script>
+  <script src="footer.js"></script>
+  <script src="ads.js"></script>
 </body>
 </html>

@@ -6,6 +6,7 @@
 <title>Image credits · Dinodle</title>
 <meta name="description" content="Credits and licences for the dinosaur silhouettes and images used in Dinodle.">
 <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="themes.css">
 </head>
 <body>
   <nav class="topbar">
@@ -19,11 +20,17 @@
       the site only recolours them for display. Thank you to every artist below.</p>
     <p>The photos shown when a game ends are loaded from Wikipedia / Wikimedia Commons. Each one keeps
       its own licence and author, listed on its Wikipedia page (use the “View on Wikipedia” link).</p>
+    <p class="muted">🦴 No spoilers: a silhouette only appears here once you have found (or been shown) that dinosaur in the game.
+      Every artist and licence is always listed.</p>
     <div style="overflow-x:auto"><table>
       <thead><tr><th>Silhouette</th><th>Dinosaur</th><th>Artist</th><th>Licence</th><th>Source</th></tr></thead>
       <tbody id="rows"><tr><td colspan="5">Loading…</td></tr></tbody>
     </table></div>
   </main>
+  <footer class="site-foot" id="site-foot"></footer>
+  <script src="config.js"></script>
+  <script src="theme.js"></script>
+  <script src="footer.js"></script>
   <script>
   (function () {
     function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
@@ -33,10 +40,16 @@
       var m = url.match(/licenses\/([a-z-]+)\/([\d.]+)/);
       return m ? 'CC ' + m[1].toUpperCase() + ' ' + m[2] : url;
     }
+    // Silhouettes of dinosaurs this player has already found (set by the game).
+    var solved = [];
+    try { solved = JSON.parse(localStorage.getItem('dinodle_solved_v1') || '[]'); } catch (e) {}
     fetch('data/silhouette-credits.json').then(function (r) { return r.json(); }).then(function (c) {
       var rows = Object.keys(c).sort().map(function (name) {
         var x = c[name];
-        return '<tr><td><img src="' + esc(x.file) + '" alt="" loading="lazy"></td>' +
+        var pic = solved.indexOf(name) !== -1
+          ? '<img src="' + esc(x.file) + '" alt="" loading="lazy">'
+          : '<span class="credit-locked" title="Find this dinosaur to reveal its silhouette">❓</span>';
+        return '<tr><td>' + pic + '</td>' +
           '<td><i>' + esc(name) + '</i>' + (x.depicts.toLowerCase() !== name.toLowerCase() ? '<br><small>(drawing of ' + esc(x.depicts) + ')</small>' : '') + '</td>' +
           '<td>' + esc(x.author) + '</td>' +
           '<td><a href="' + esc(x.license) + '" rel="noopener license">' + esc(licName(x.license)) + '</a></td>' +
