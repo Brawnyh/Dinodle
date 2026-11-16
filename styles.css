@@ -226,3 +226,9 @@ body.ads-on .ad-incontent,body.ads-preview .ad-incontent{margin-top:150px}
   .modal{padding:44px 16px 18px}
   .modal-img-wrap{height:200px}
 }
+
+/* Result: share on networks + donation links */
+.share-row,.support-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:10px;font-size:13px}
+.share-net{padding:6px 11px;border-radius:999px;border:1px solid var(--line);color:var(--text);text-decoration:none;font-weight:700;font-size:12.5px;background:rgba(255,255,255,.04)}
+.share-net:hover{border-color:var(--accent);color:var(--accent)}
+.support-row .support-btn{margin:0}

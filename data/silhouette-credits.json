@@ -78,9 +78,9 @@
   },
   "Giganotosaurus carolinii": {
     "file": "img/silhouettes/giganotosaurus.svg",
-    "author": "Marie-Aimée ALLARD",
-    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
-    "source": "https://www.phylopic.org/images/a0f796bd-64f5-4533-bf01-b798fa519895",
+    "author": "Ivan Iofrida",
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+    "source": "https://www.phylopic.org/images/9775f3fc-8a01-48be-8e19-2b95b82fa8b7",
     "depicts": "Giganotosaurus carolinii"
   },
   "Compsognathus longipes": {
@@ -120,9 +120,9 @@
   },
   "Dilophosaurus wetherilli": {
     "file": "img/silhouettes/dilophosaurus.svg",
-    "author": "Marie Aimée ALLARD",
+    "author": "artrociraptor",
     "license": "https://creativecommons.org/publicdomain/zero/1.0/",
-    "source": "https://www.phylopic.org/images/36b898fe-0812-4832-8e6e-a5b2f26ee113",
+    "source": "https://www.phylopic.org/images/6b999b4b-b474-4bb7-bbf8-eacc05fd4bbb",
     "depicts": "Dilophosaurus wetherilli"
   },
   "Carnotaurus sastrei": {
@@ -183,9 +183,9 @@
   },
   "Deinonychus antirrhopus": {
     "file": "img/silhouettes/deinonychus.svg",
-    "author": "Caleb M. Gordon",
-    "license": "https://creativecommons.org/licenses/by/4.0/",
-    "source": "https://www.phylopic.org/images/8cc46088-75b0-40c7-ae8e-8c986277a5f8",
+    "author": "Emily Willoughby",
+    "license": "https://creativecommons.org/licenses/by-sa/3.0/",
+    "source": "https://www.phylopic.org/images/b0b06467-f4f2-405f-acf3-eb1bd1075336",
     "depicts": "Deinonychus antirrhopus"
   },
   "Maiasaura peeblesorum": {
@@ -218,9 +218,9 @@
   },
   "Ceratosaurus nasicornis": {
     "file": "img/silhouettes/ceratosaurus.svg",
-    "author": "Marie Aimée ALLARD",
+    "author": "Tasman Dixon",
     "license": "https://creativecommons.org/publicdomain/zero/1.0/",
-    "source": "https://www.phylopic.org/images/021a9423-2c69-4c4b-b888-de540a11a928",
+    "source": "https://www.phylopic.org/images/4d7d38eb-0973-4bac-b7c7-99e63c40fe82",
     "depicts": "Ceratosaurus nasicornis"
   },
   "Massospondylus carinatus": {
@@ -369,5 +369,474 @@
     "license": "https://creativecommons.org/licenses/by/3.0/",
     "source": "https://www.phylopic.org/images/1035c389-5e91-479d-b14c-b0665ec4e14d",
     "depicts": "Sinosauropteryx prima"
+  },
+  "Stygimoloch spinifer": {
+    "file": "img/silhouettes/stygimoloch.svg",
+    "author": "Emily Willoughby",
+    "license": "https://creativecommons.org/licenses/by-sa/3.0/",
+    "source": "https://www.phylopic.org/images/dc73bebc-7294-493d-b64a-98addd6ea837",
+    "depicts": "Pachycephalosaurus spinifer"
+  },
+  "Cryolophosaurus ellioti": {
+    "file": "img/silhouettes/cryolophosaurus.svg",
+    "author": "Brad McFeeters (vectorized by T. Michael Keesey)",
+    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "source": "https://www.phylopic.org/images/6655838b-ba6a-4889-92f4-879444d1b931",
+    "depicts": "Cryolophosaurus ellioti"
+  },
+  "Australovenator wintonensis": {
+    "file": "img/silhouettes/australovenator.svg",
+    "author": "Tasman Dixon",
+    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "source": "https://www.phylopic.org/images/71dd81da-de65-4670-8e4e-b84de4e2e5fa",
+    "depicts": "Australovenator wintonensis"
+  },
+  "Tarbosaurus bataar": {
+    "file": "img/silhouettes/tarbosaurus.svg",
+    "author": "Matt Martyniuk, Conty & T. Michael Keesey",
+    "license": "https://creativecommons.org/licenses/by-sa/3.0/",
+    "source": "https://www.phylopic.org/images/5fb2a2f9-8712-486c-ac76-bcdc0e14c2bd",
+    "depicts": "Tyrannosaurus bataar"
+  },
+  "Yutyrannus huali": {
+    "file": "img/silhouettes/yutyrannus.svg",
+    "author": "Tasman Dixon",
+    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "source": "https://www.phylopic.org/images/5770eb59-b382-4867-bdcc-f304eb4f0020",
+    "depicts": "Yutyrannus huali"
+  },
+  "Concavenator corcovatus": {
+    "file": "img/silhouettes/concavenator.svg",
+    "author": "Ivan Iofrida",
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+    "source": "https://www.phylopic.org/images/905a3318-2cf0-4666-a69a-0efa2ad06514",
+    "depicts": "Concavenator corcovatus"
+  },
+  "Irritator challengeri": {
+    "file": "img/silhouettes/irritator.svg",
+    "author": "Connor Ashbridge",
+    "license": "https://creativecommons.org/licenses/by-sa/3.0/",
+    "source": "https://www.phylopic.org/images/27a5d428-6513-481a-96d3-b895228eb04b",
+    "depicts": "Irritator challengeri"
+  },
+  "Guanlong wucaii": {
+    "file": "img/silhouettes/guanlong.svg",
+    "author": "Tasman Dixon",
+    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "source": "https://www.phylopic.org/images/43357e3e-790e-450b-b184-c8cd58e407e6",
+    "depicts": "Guanlong wucaii"
+  },
+  "Neovenator salerii": {
+    "file": "img/silhouettes/neovenator.svg",
+    "author": "FunkMonk",
+    "license": "https://creativecommons.org/licenses/by-sa/3.0/",
+    "source": "https://www.phylopic.org/images/c4927904-010c-4c48-b1b6-a85669e043d7",
+    "depicts": "Neovenator salerii"
+  },
+  "Monolophosaurus jiangi": {
+    "file": "img/silhouettes/monolophosaurus.svg",
+    "author": "Amy Beauvois",
+    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "source": "https://www.phylopic.org/images/6f050414-39b9-4eee-80a2-3cdbe0140fb6",
+    "depicts": "Monolophosaurus jiangi"
+  },
+  "Megalosaurus bucklandii": {
+    "file": "img/silhouettes/megalosaurus.svg",
+    "author": "Tasman Dixon",
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+    "source": "https://www.phylopic.org/images/33a7e349-32ff-4f29-94a5-cb23ede45d60",
+    "depicts": "Megalosaurus bucklandii"
+  },
+  "Torvosaurus tanneri": {
+    "file": "img/silhouettes/torvosaurus.svg",
+    "author": "Jagged Fang Designs",
+    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "source": "https://www.phylopic.org/images/13d6de32-507a-4d96-ba11-897f71cecad1",
+    "depicts": "Torvosaurus tanneri"
+  },
+  "Eustreptospondylus oxoniensis": {
+    "file": "img/silhouettes/eustreptospondylus.svg",
+    "author": "Jaime Headden",
+    "license": "https://creativecommons.org/licenses/by/3.0/",
+    "source": "https://www.phylopic.org/images/e46c71d9-d38c-4539-9f95-b1a26167d5d0",
+    "depicts": "Eustreptospondylus oxoniensis"
+  },
+  "Austroraptor cabazai": {
+    "file": "img/silhouettes/austroraptor.svg",
+    "author": "Tasman Dixon",
+    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "source": "https://www.phylopic.org/images/eb481f28-4f1a-4cfc-96ea-f3ab0a622e6b",
+    "depicts": "Austroraptor cabazai"
+  },
+  "Buitreraptor gonzalezorum": {
+    "file": "img/silhouettes/buitreraptor.svg",
+    "author": "Will Toosey",
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+    "source": "https://www.phylopic.org/images/93a1f977-8f18-40ed-8947-c9379e766ec1",
+    "depicts": "Buitreraptor gonzalezorum"
+  },
+  "Halszkaraptor escuilliei": {
+    "file": "img/silhouettes/halszkaraptor.svg",
+    "author": "Will Toosey",
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+    "source": "https://www.phylopic.org/images/cec57304-e746-4cc5-8c92-16ba656734ce",
+    "depicts": "Halszkaraptor escuilliei"
+  },
+  "Gigantoraptor erlianensis": {
+    "file": "img/silhouettes/gigantoraptor.svg",
+    "author": "Cy Marchant",
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+    "source": "https://www.phylopic.org/images/6ba48f04-d4b7-4f97-a0d2-17fb2bf5473e",
+    "depicts": "Gigantoraptor erlianensis"
+  },
+  "Citipati osmolskae": {
+    "file": "img/silhouettes/citipati.svg",
+    "author": "Emily Willoughby",
+    "license": "https://creativecommons.org/licenses/by-sa/3.0/",
+    "source": "https://www.phylopic.org/images/b82711c1-4c4c-4fdd-b9ff-2bcd48aa4cd1",
+    "depicts": "Citipati osmolskae"
+  },
+  "Caudipteryx zoui": {
+    "file": "img/silhouettes/caudipteryx.svg",
+    "author": "Scott Hartman",
+    "license": "https://creativecommons.org/licenses/by/3.0/",
+    "source": "https://www.phylopic.org/images/44f92120-e7ea-442c-b70e-4b4cb8515f8c",
+    "depicts": "Caudipteryx zoui"
+  },
+  "Struthiomimus altus": {
+    "file": "img/silhouettes/struthiomimus.svg",
+    "author": "Craig Dylke",
+    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "source": "https://www.phylopic.org/images/72d740f3-17f2-460f-b04b-fa9bb6b3e00f",
+    "depicts": "Struthiomimus altus"
+  },
+  "Ornithomimus velox": {
+    "file": "img/silhouettes/ornithomimus.svg",
+    "author": "Christiana Garros",
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+    "source": "https://www.phylopic.org/images/b778f21e-0415-4990-b7be-27dc3ce21405",
+    "depicts": "Ornithomimus"
+  },
+  "Saurornitholestes langstoni": {
+    "file": "img/silhouettes/saurornitholestes.svg",
+    "author": "Scott Hartman",
+    "license": "https://creativecommons.org/licenses/by/3.0/",
+    "source": "https://www.phylopic.org/images/74c2f75c-2379-4a64-9694-a160ed21e61f",
+    "depicts": "Saurornitholestes langstoni"
+  },
+  "Albertosaurus sarcophagus": {
+    "file": "img/silhouettes/albertosaurus.svg",
+    "author": "Craig Dylke",
+    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "source": "https://www.phylopic.org/images/02e30c15-3233-449b-a623-85314f79e870",
+    "depicts": "Albertosaurus sarcophagus"
+  },
+  "Gorgosaurus libratus": {
+    "file": "img/silhouettes/gorgosaurus.svg",
+    "author": "Ivan Iofrida",
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+    "source": "https://www.phylopic.org/images/05303fb9-b143-487f-8efa-43dd8238c08b",
+    "depicts": "Albertosaurus libratus"
+  },
+  "Daspletosaurus torosus": {
+    "file": "img/silhouettes/daspletosaurus.svg",
+    "author": "Cy Marchant",
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+    "source": "https://www.phylopic.org/images/dfd0c502-e329-4b8b-81d9-981d687a7aaa",
+    "depicts": "Daspletosaurus torosus"
+  },
+  "Aucasaurus garridoi": {
+    "file": "img/silhouettes/aucasaurus.svg",
+    "author": "Jack Mayer Wood",
+    "license": "https://creativecommons.org/licenses/by-sa/3.0/",
+    "source": "https://www.phylopic.org/images/1b609fd9-9de2-4b06-95c4-7ee3bb7d0cf8",
+    "depicts": "Aucasaurus garridoi"
+  },
+  "Elaphrosaurus bambergi": {
+    "file": "img/silhouettes/elaphrosaurus.svg",
+    "author": "FunkMonk",
+    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "source": "https://www.phylopic.org/images/585a10c9-41ee-4c65-9c55-894c8fbe57f1",
+    "depicts": "Elaphrosaurus bambergi"
+  },
+  "Masiakasaurus knopfleri": {
+    "file": "img/silhouettes/masiakasaurus.svg",
+    "author": "Tasman Dixon",
+    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "source": "https://www.phylopic.org/images/59f28864-a02b-44ab-8ed6-5e3bbecaee58",
+    "depicts": "Masiakasaurus knopfleri"
+  },
+  "Acrocanthosaurus atokensis": {
+    "file": "img/silhouettes/acrocanthosaurus.svg",
+    "author": "Jagged Fang Designs",
+    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "source": "https://www.phylopic.org/images/078ca0f5-8b12-48cf-aa47-8b689d6a1067",
+    "depicts": "Acrocanthosaurus atokensis"
+  },
+  "Ornitholestes hermanni": {
+    "file": "img/silhouettes/ornitholestes.svg",
+    "author": "Will Toosey",
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+    "source": "https://www.phylopic.org/images/84554dd9-9ad1-4e14-a8da-203b5ce37691",
+    "depicts": "Ornitholestes hermanni"
+  },
+  "Eoraptor lunensis": {
+    "file": "img/silhouettes/eoraptor.svg",
+    "author": "Marmelad",
+    "license": "https://creativecommons.org/licenses/by-sa/3.0/",
+    "source": "https://www.phylopic.org/images/8f3e5723-986f-4f1d-9292-ff041ce176ca",
+    "depicts": "Eoraptor lunensis"
+  },
+  "Lufengosaurus huenei": {
+    "file": "img/silhouettes/lufengosaurus.svg",
+    "author": "Tasman Dixon",
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+    "source": "https://www.phylopic.org/images/ea3d0fc3-a039-4acb-a12d-c1e535d809c0",
+    "depicts": "Lufengosaurus"
+  },
+  "Shunosaurus lii": {
+    "file": "img/silhouettes/shunosaurus.svg",
+    "author": "Scott Hartman",
+    "license": "https://creativecommons.org/licenses/by/3.0/",
+    "source": "https://www.phylopic.org/images/017022b6-81c9-486e-b545-2782729ea896",
+    "depicts": "Shunosaurus lii"
+  },
+  "Dreadnoughtus schrani": {
+    "file": "img/silhouettes/dreadnoughtus.svg",
+    "author": "Scott Hartman",
+    "license": "https://creativecommons.org/licenses/by/3.0/",
+    "source": "https://www.phylopic.org/images/769e86a0-ef2a-47ef-b6f9-5df58cf9fa9c",
+    "depicts": "Dreadnoughtus schrani"
+  },
+  "Giraffatitan brancai": {
+    "file": "img/silhouettes/giraffatitan.svg",
+    "author": "Amy Beauvois",
+    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "source": "https://www.phylopic.org/images/1e6b0240-6249-4149-8499-5f1c08079bcc",
+    "depicts": "Giraffatitan brancai"
+  },
+  "Europasaurus holgeri": {
+    "file": "img/silhouettes/europasaurus.svg",
+    "author": "Will Toosey",
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+    "source": "https://www.phylopic.org/images/8ae0090f-b2c8-4af9-ab86-c233fc40c11e",
+    "depicts": "Europasaurus holgeri"
+  },
+  "Barosaurus lentus": {
+    "file": "img/silhouettes/barosaurus.svg",
+    "author": "Tasman Dixon",
+    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "source": "https://www.phylopic.org/images/9bfb8f27-ec02-427b-969a-9a980dedbe7c",
+    "depicts": "Barosaurus lentus"
+  },
+  "Alamosaurus sanjuanensis": {
+    "file": "img/silhouettes/alamosaurus.svg",
+    "author": "artrociraptor",
+    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "source": "https://www.phylopic.org/images/db0bc049-fa74-435a-b60c-5a85fbb55a7e",
+    "depicts": "Alamosaurus sanjuanensis"
+  },
+  "Cetiosaurus oxoniensis": {
+    "file": "img/silhouettes/cetiosaurus.svg",
+    "author": "Will Toosey",
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+    "source": "https://www.phylopic.org/images/e1d6cb63-47b0-424b-91b2-edbc4044dfa9",
+    "depicts": "Cetiosaurus oxoniensis"
+  },
+  "Riojasaurus incertus": {
+    "file": "img/silhouettes/riojasaurus.svg",
+    "author": "Tasman Dixon",
+    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "source": "https://www.phylopic.org/images/4ac3103b-2649-4a1d-b58f-260ac8884dcd",
+    "depicts": "Riojasaurus incertus"
+  },
+  "Sauropelta edwardsorum": {
+    "file": "img/silhouettes/sauropelta.svg",
+    "author": "Emily Willoughby",
+    "license": "https://creativecommons.org/licenses/by-sa/3.0/",
+    "source": "https://www.phylopic.org/images/9dc23409-1e36-402d-8be5-6b939f7fb664",
+    "depicts": "Sauropelta edwardsorum"
+  },
+  "Polacanthus foxii": {
+    "file": "img/silhouettes/polacanthus.svg",
+    "author": "FunkMonk",
+    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "source": "https://www.phylopic.org/images/58982e27-5545-4357-86d5-cb98b29ba853",
+    "depicts": "Polacanthus foxii"
+  },
+  "Diamantinasaurus matildae": {
+    "file": "img/silhouettes/diamantinasaurus.svg",
+    "author": "T. Tischler",
+    "license": "https://creativecommons.org/licenses/by-sa/3.0/",
+    "source": "https://www.phylopic.org/images/aea1fe86-e7e8-4011-bf81-133cbb9c1f14",
+    "depicts": "Diamantinasaurus matildae"
+  },
+  "Dacentrurus armatus": {
+    "file": "img/silhouettes/dacentrurus.svg",
+    "author": "Jaime Headden",
+    "license": "https://creativecommons.org/licenses/by/3.0/",
+    "source": "https://www.phylopic.org/images/0b56513a-bcc2-4f96-bf8b-92ac61d3c51e",
+    "depicts": "Dacentrurus armatus"
+  },
+  "Hesperosaurus mjosi": {
+    "file": "img/silhouettes/hesperosaurus.svg",
+    "author": "Connor Ashbridge",
+    "license": "https://creativecommons.org/licenses/by-sa/3.0/",
+    "source": "https://www.phylopic.org/images/a51d2670-5e69-4976-81e0-0b54c8769f5c",
+    "depicts": "Stegosaurus mjosi"
+  },
+  "Huayangosaurus taibaii": {
+    "file": "img/silhouettes/huayangosaurus.svg",
+    "author": "Tasman Dixon",
+    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "source": "https://www.phylopic.org/images/c24ebf93-5b97-4344-a8c5-d7db51323afa",
+    "depicts": "Huayangosaurus taibaii"
+  },
+  "Scutellosaurus lawleri": {
+    "file": "img/silhouettes/scutellosaurus.svg",
+    "author": "Scott Hartman",
+    "license": "https://creativecommons.org/publicdomain/mark/1.0/",
+    "source": "https://www.phylopic.org/images/9c95e2d1-bac4-4b61-a87f-22a34250acf1",
+    "depicts": "Scutellosaurus lawleri"
+  },
+  "Psittacosaurus mongoliensis": {
+    "file": "img/silhouettes/psittacosaurus.svg",
+    "author": "Skye McDavid",
+    "license": "https://creativecommons.org/licenses/by/3.0/",
+    "source": "https://www.phylopic.org/images/1d146d81-9e51-4a74-ab67-befedf769f19",
+    "depicts": "Psittacosaurus mongoliensis"
+  },
+  "Leptoceratops gracilis": {
+    "file": "img/silhouettes/leptoceratops.svg",
+    "author": "Itai Fein",
+    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "source": "https://www.phylopic.org/images/5b2de2fb-6d63-4145-95eb-7b91c948a6ba",
+    "depicts": "Leptoceratops gracilis"
+  },
+  "Chasmosaurus belli": {
+    "file": "img/silhouettes/chasmosaurus.svg",
+    "author": "Matt Dempsey",
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+    "source": "https://www.phylopic.org/images/9738fe4f-f60b-4f76-a014-f0cf4478d368",
+    "depicts": "Chasmosaurus belli"
+  },
+  "Einiosaurus procurvicornis": {
+    "file": "img/silhouettes/einiosaurus.svg",
+    "author": "Nobu Tamura (vectorized by T. Michael Keesey)",
+    "license": "https://creativecommons.org/licenses/by/3.0/",
+    "source": "https://www.phylopic.org/images/fa749dd0-d69b-43a3-b239-75b80c4307aa",
+    "depicts": "Einiosaurus procurvicornis"
+  },
+  "Kosmoceratops richardsoni": {
+    "file": "img/silhouettes/kosmoceratops.svg",
+    "author": "Scott D. Sampson, Mark A. Loewen, Andrew A. Farke, Eric M. Roberts, Catherine A. Forster, Joshua A. Smith, Alan L. Titus",
+    "license": "https://creativecommons.org/licenses/by-sa/3.0/",
+    "source": "https://www.phylopic.org/images/d0df60c7-4fd3-418e-9521-00a8296a8a14",
+    "depicts": "Kosmoceratops richardsoni"
+  },
+  "Nasutoceratops titusi": {
+    "file": "img/silhouettes/nasutoceratops.svg",
+    "author": "Lukas Panzarin (vectorized by T. Michael Keesey)",
+    "license": "https://creativecommons.org/licenses/by/3.0/",
+    "source": "https://www.phylopic.org/images/ef275bb4-d7bc-4687-a52e-9dab12a1f582",
+    "depicts": "Nasutoceratops titusi"
+  },
+  "Sinoceratops zhuchengensis": {
+    "file": "img/silhouettes/sinoceratops.svg",
+    "author": "Tasman Dixon",
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+    "source": "https://www.phylopic.org/images/cc582628-b4c5-45fd-bb6a-c3935d4e677b",
+    "depicts": "Sinoceratops zhuchengensis"
+  },
+  "Yinlong downsi": {
+    "file": "img/silhouettes/yinlong.svg",
+    "author": "Andrew A. Farke",
+    "license": "https://creativecommons.org/licenses/by/3.0/",
+    "source": "https://www.phylopic.org/images/580db433-c610-40df-b7d8-a3434ad158ed",
+    "depicts": "Yinlong downsi"
+  },
+  "Stegoceras validum": {
+    "file": "img/silhouettes/stegoceras.svg",
+    "author": "Caleb M. Brown",
+    "license": "https://creativecommons.org/licenses/by-sa/3.0/",
+    "source": "https://www.phylopic.org/images/4d160c01-0026-4176-9471-4e79771c8c91",
+    "depicts": "Stegoceras validum"
+  },
+  "Prenocephale prenes": {
+    "file": "img/silhouettes/prenocephale.svg",
+    "author": "Cy Marchant",
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+    "source": "https://www.phylopic.org/images/30598d11-2df5-4d8c-8c0a-c63c51834b8e",
+    "depicts": "Prenocephale prenes"
+  },
+  "Hypsilophodon foxii": {
+    "file": "img/silhouettes/hypsilophodon.svg",
+    "author": "Matt Dempsey",
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+    "source": "https://www.phylopic.org/images/9c7e5ea9-6cdc-4947-af5b-292ec886754e",
+    "depicts": "Hypsilophodon foxii"
+  },
+  "Tenontosaurus tilletti": {
+    "file": "img/silhouettes/tenontosaurus.svg",
+    "author": "Matt Dempsey",
+    "license": "https://creativecommons.org/licenses/by/3.0/",
+    "source": "https://www.phylopic.org/images/5f4c760e-f6f7-4b9b-9199-db12bcfbf212",
+    "depicts": "Tenontosaurus tilletti"
+  },
+  "Dryosaurus altus": {
+    "file": "img/silhouettes/dryosaurus.svg",
+    "author": "Gareth Monger",
+    "license": "https://creativecommons.org/licenses/by/3.0/",
+    "source": "https://www.phylopic.org/images/14184e4e-0777-4d0b-8cb4-00dedd216af4",
+    "depicts": "Dryosaurus altus"
+  },
+  "Camptosaurus dispar": {
+    "file": "img/silhouettes/camptosaurus.svg",
+    "author": "Tasman Dixon",
+    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "source": "https://www.phylopic.org/images/26a45f4d-f777-4e9c-9289-4620c6aeca0a",
+    "depicts": "Camptosaurus dispar"
+  },
+  "Lesothosaurus diagnosticus": {
+    "file": "img/silhouettes/lesothosaurus.svg",
+    "author": "Matt Dempsey",
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+    "source": "https://www.phylopic.org/images/46447cfa-6a6b-4eb1-bb48-3531ec3ca4fd",
+    "depicts": "Lesothosaurus diagnosticus"
+  },
+  "Heterodontosaurus tucki": {
+    "file": "img/silhouettes/heterodontosaurus.svg",
+    "author": "TotalDino",
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+    "source": "https://www.phylopic.org/images/dc418dda-1a53-4b32-b59b-cd543739afe6",
+    "depicts": "Heterodontosaurus tucki"
+  },
+  "Leaellynasaura amicagraphica": {
+    "file": "img/silhouettes/leaellynasaura.svg",
+    "author": "Dann Pigdon",
+    "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "source": "https://www.phylopic.org/images/5e82608f-3de6-4ad3-9ff7-3394b92c48d0",
+    "depicts": "Leaellynasaura amicagraphica"
+  },
+  "Olorotitan arharensis": {
+    "file": "img/silhouettes/olorotitan.svg",
+    "author": "ДиБгд (vectorized by T. Michael Keesey)",
+    "license": "https://creativecommons.org/licenses/by-sa/3.0/",
+    "source": "https://www.phylopic.org/images/9161bbeb-fa38-48f6-bb20-c68c255dd9b6",
+    "depicts": "Olorotitan arharensis"
+  },
+  "Brachylophosaurus canadensis": {
+    "file": "img/silhouettes/brachylophosaurus.svg",
+    "author": "Matt Dempsey",
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+    "source": "https://www.phylopic.org/images/0a123245-f429-4e2c-b3e3-88e591966ece",
+    "depicts": "Brachylophosaurus canadensis"
+  },
+  "Thescelosaurus neglectus": {
+    "file": "img/silhouettes/thescelosaurus.svg",
+    "author": "Caleb M. Brown",
+    "license": "https://creativecommons.org/licenses/by-sa/3.0/",
+    "source": "https://www.phylopic.org/images/b7879e57-baca-4cd2-83c5-e85e8971a85f",
+    "depicts": "Thescelosaurus neglectus"
   }
 }

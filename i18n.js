@@ -45,7 +45,7 @@
       buy_hint: 'Use 1 🦴', hint_requires: 'Unlock the other two clues first', no_tokens: 'No bones left',
       final_score: 'Score: <b>{score}</b>.', share: '📋 Share result', copied: '✅ Result copied — paste it anywhere!', copy_this: 'Copy your result:',
       history_title: 'Game history', history_empty: 'No games yet.', won_label: 'Won', lost_label: 'Lost',
-      privacy: 'Privacy', about: 'About', contact: 'Contact', other_game: '🦸 Try our superhero game', support: '☕ Support Dinodle',
+      privacy: 'Privacy', about: 'About', contact: 'Contact', other_game: '🦸 Try our superhero game', support: '☕ Support Dinodle', all_dinos: 'All dinosaurs',
       help_names: 'Type the scientific name (or an alias such as "T-Rex"). Only dinosaurs in the database are accepted.',
       help_easy: '<b>Easy mode</b> only uses the 25 most famous dinosaurs.',
       credits_link: 'Image credits'
@@ -86,7 +86,7 @@
       buy_hint: 'Utiliser 1 🦴', hint_requires: 'Débloque d\'abord les deux autres indices', no_tokens: 'Plus d\'os',
       final_score: 'Score : <b>{score}</b>.', share: '📋 Partager', copied: '✅ Résultat copié — colle-le où tu veux !', copy_this: 'Copie ton résultat :',
       history_title: 'Historique', history_empty: 'Aucune partie pour l\'instant.', won_label: 'Gagnée', lost_label: 'Perdue',
-      privacy: 'Confidentialité', about: 'À propos', contact: 'Contact', other_game: '🦸 Essaie notre jeu de super-héros', support: '☕ Soutenir Dinodle',
+      privacy: 'Confidentialité', about: 'À propos', contact: 'Contact', other_game: '🦸 Essaie notre jeu de super-héros', support: '☕ Soutenir Dinodle', all_dinos: 'Tous les dinosaures',
       help_names: 'Écris le nom scientifique (ou un alias comme « T-Rex »). Seuls les dinosaures de la base sont acceptés.',
       help_easy: 'Le <b>mode Facile</b> n\'utilise que les 25 dinosaures les plus connus.',
       credits_link: 'Crédits des images'
@@ -127,7 +127,7 @@
       buy_hint: 'Usar 1 🦴', hint_requires: 'Desbloquea antes las otras dos pistas', no_tokens: 'No quedan huesos',
       final_score: 'Puntos: <b>{score}</b>.', share: '📋 Compartir', copied: '✅ Resultado copiado — ¡pégalo donde quieras!', copy_this: 'Copia tu resultado:',
       history_title: 'Historial', history_empty: 'Aún no hay partidas.', won_label: 'Ganada', lost_label: 'Perdida',
-      privacy: 'Privacidad', about: 'Acerca de', contact: 'Contacto', other_game: '🦸 Prueba nuestro juego de superhéroes', support: '☕ Apoya Dinodle',
+      privacy: 'Privacidad', about: 'Acerca de', contact: 'Contacto', other_game: '🦸 Prueba nuestro juego de superhéroes', support: '☕ Apoya Dinodle', all_dinos: 'Todos los dinosaurios',
       help_names: 'Escribe el nombre científico (o alias como "T-Rex"). Solo se aceptan dinosaurios de la base de datos.',
       help_easy: 'El <b>modo Fácil</b> solo usa los 25 dinosaurios más famosos.',
       credits_link: 'Créditos de imágenes'

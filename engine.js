@@ -599,12 +599,36 @@
         share.addEventListener('click', shareResult);
         bannerEl.appendChild(share);
       }
-      // Donation link after the game (never before playing).
-      const support = global.SITE && global.SITE.SUPPORT_URL;
-      if (support) {
-        const a = el('a', 'support-btn', T('support'));
-        a.href = support; a.target = '_blank'; a.rel = 'noopener';
-        bannerEl.appendChild(a);
+      // Share on social networks (result text only, never the answer).
+      if (!state.practice) {
+        const text = shareText();
+        const url = cfg.shareUrl || location.origin + location.pathname;
+        const enc = encodeURIComponent;
+        const nets = [
+          ['X', 'https://twitter.com/intent/tweet?text=' + enc(text)],
+          ['Bluesky', 'https://bsky.app/intent/compose?text=' + enc(text)],
+          ['Reddit', 'https://www.reddit.com/submit?url=' + enc(url) + '&title=' + enc(text.split('\n')[0])],
+          ['WhatsApp', 'https://wa.me/?text=' + enc(text)],
+          ['Facebook', 'https://www.facebook.com/sharer/sharer.php?u=' + enc(url)]
+        ];
+        const row = el('div', 'share-row');
+        nets.forEach(function (n) {
+          const a = el('a', 'share-net', n[0]);
+          a.href = n[1]; a.target = '_blank'; a.rel = 'noopener';
+          row.appendChild(a);
+        });
+        bannerEl.appendChild(row);
+      }
+      // Donation links after the game (never before playing).
+      const support = global.SITE && global.SITE.supportLinks ? global.SITE.supportLinks() : [];
+      if (support.length) {
+        const row = el('div', 'support-row', T('support') + ' ');
+        support.forEach(function (s) {
+          const a = el('a', 'support-btn', s.label);
+          a.href = s.url; a.target = '_blank'; a.rel = 'noopener';
+          row.appendChild(a);
+        });
+        bannerEl.appendChild(row);
       }
       inputEl.disabled = true;
       const b = formEl.querySelector('button');
@@ -622,16 +646,19 @@
     }
 
     // Wordle-style result: one emoji row per guess, no names (no spoilers).
-    function shareResult() {
+    function shareText() {
       const icon = { correct: '🟩', close: '🟨', wrong: '⬛' };
       const rows = state.guesses.map(function (name) {
         const g = data.find(function (d) { return d.name === name; });
         return attributes.map(function (a) { return icon[(a.compare(g, state.target) || {}).status] || '⬛'; }).join('');
       });
-      const text = (cfg.shareTitle || 'Dinodle') + ' #' + puzzleNumber() +
+      return (cfg.shareTitle || 'Dinodle') + ' #' + puzzleNumber() +
         ' ' + (state.won ? state.attempts + '/' + maxAttempts : 'X/' + maxAttempts) +
         ' · ' + computeScore() + ' ' + T('pts') + (state.hintsBought.size ? ' · 🦴×' + state.hintsBought.size : '') +
         '\n' + rows.join('\n') + '\n' + (cfg.shareUrl || location.origin + location.pathname);
+    }
+    function shareResult() {
+      const text = shareText();
       const done = function () { showMsg(T('copied'), 'good'); };
       if (navigator.share && /Mobi|Android/i.test(navigator.userAgent)) {
         navigator.share({ text: text }).catch(function () {});
