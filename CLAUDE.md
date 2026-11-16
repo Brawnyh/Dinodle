@@ -6,7 +6,7 @@ Guidance for Claude Code when working in this repository.
 
 **Dinodle** is a static, client-side daily guessing game ("-dle" style): guess the dinosaur of the day by comparing attributes (period, diet, type, weight, length, continent). There is no build step, framework, or backend.
 
-The superhero / "guess the character" game used to live here as a DC mode. It now lives in its own repository (`C:\Users\Deme\guess-the-character`). Don't add it back here.
+The superhero / "guess the character" game used to live here as a DC mode. It now lives in its own repository (`C:\Users\Deme\guess-the-character`, github.com/Brawnyh/guessTheCharacter). Don't add it back here.
 
 Owner priorities: Dinodle first. Make it presentable, English-first (with French and Spanish), then AdSense-ready (privacy/about/contact pages, Google's consent banner, own domain), then monetize.
 
