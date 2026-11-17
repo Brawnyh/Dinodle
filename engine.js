@@ -400,7 +400,7 @@
     };
     const dailyIndex = dayNumber() % data.length;
 
-    let inputEl, formEl, msgEl, boardBody, counterEl, scoreEl, tokensEl, hintsEl, bannerEl,
+    let inputEl, formEl, msgEl, boardBody, counterEl, scoreEl, tokensEl, hintsEl, bannerEl, challengeEl,
         acListEl, acTimer;
 
     function tokensEarned() { return tokensAt.filter(function (t) { return state.attempts >= t; }).length; }
@@ -434,6 +434,13 @@
       head.appendChild(cd);
       root.appendChild(head);
       startCountdown(cd);
+
+      // A friend's challenge link (?vs=<tries, 0 = lost>&p=<puzzle #>), only for today's puzzle.
+      const vs = readChallenge();
+      if (vs) {
+        challengeEl = el('div', 'challenge-banner', vs.won ? T('vs_banner_win', { n: vs.n }) : T('vs_banner_lose'));
+        root.appendChild(challengeEl);
+      }
 
       if (hints.length) {
         hintsEl = el('div', 'hints');
@@ -598,6 +605,22 @@
         share.type = 'button';
         share.addEventListener('click', shareResult);
         bannerEl.appendChild(share);
+        const ch = el('button', 'share-btn', T('challenge'));
+        ch.type = 'button';
+        ch.addEventListener('click', challengeFriend);
+        bannerEl.appendChild(ch);
+        const im = el('button', 'share-btn share-img', T('save_image'));
+        im.type = 'button';
+        im.addEventListener('click', shareImage);
+        bannerEl.appendChild(im);
+        // Result against the friend who sent the challenge link.
+        const vs = readChallenge();
+        if (vs) {
+          if (challengeEl) challengeEl.style.display = 'none';
+          const you = state.won ? state.attempts : null, them = vs.won ? vs.n : null;
+          const key = you === them ? 'vs_tie' : you === null ? 'vs_you_lose' : them === null ? 'vs_you_win' : you < them ? 'vs_you_win' : 'vs_you_lose';
+          bannerEl.appendChild(el('div', 'vs-result', T(key, { you: you === null ? 'X' : you, them: them === null ? 'X' : them })));
+        }
       }
       // Share on social networks (result text only, never the answer).
       if (!state.practice) {
@@ -646,19 +669,100 @@
     }
 
     // Wordle-style result: one emoji row per guess, no names (no spoilers).
+    function statusRows() {
+      return state.guesses.map(function (name) {
+        const g = data.find(function (d) { return d.name === name; });
+        return attributes.map(function (a) { return (a.compare(g, state.target) || {}).status || 'wrong'; });
+      });
+    }
     function shareText() {
       const icon = { correct: '🟩', close: '🟨', wrong: '⬛' };
-      const rows = state.guesses.map(function (name) {
-        const g = data.find(function (d) { return d.name === name; });
-        return attributes.map(function (a) { return icon[(a.compare(g, state.target) || {}).status] || '⬛'; }).join('');
+      const rows = statusRows().map(function (r) {
+        return r.map(function (s) { return icon[s] || '⬛'; }).join('');
       });
       return (cfg.shareTitle || 'Dinodle') + ' #' + puzzleNumber() +
         ' ' + (state.won ? state.attempts + '/' + maxAttempts : 'X/' + maxAttempts) +
         ' · ' + computeScore() + ' ' + T('pts') + (state.hintsBought.size ? ' · 🦴×' + state.hintsBought.size : '') +
         '\n' + rows.join('\n') + '\n' + (cfg.shareUrl || location.origin + location.pathname);
     }
-    function shareResult() {
-      const text = shareText();
+    function shareResult() { shareOrCopy(shareText()); }
+
+    function readChallenge() {
+      const q = new URLSearchParams(location.search);
+      const vs = q.get('vs');
+      if (vs == null || parseInt(q.get('p'), 10) !== puzzleNumber()) return null;
+      const n = parseInt(vs, 10);
+      if (!(n >= 0 && n <= maxAttempts)) return null;
+      return { won: n > 0, n: n };
+    }
+    function challengeUrl() {
+      const base = cfg.shareUrl || location.origin + location.pathname;
+      const sep = base.indexOf('?') !== -1 ? '&' : /\/$/.test(base) ? '?' : '/?';
+      return base + sep + 'vs=' + (state.won ? state.attempts : 0) + '&p=' + puzzleNumber();
+    }
+    function challengeFriend() {
+      shareOrCopy((state.won ? T('challenge_text_win', { n: state.attempts }) : T('challenge_text_lose')) + '\n' + challengeUrl());
+    }
+
+    // Square result card drawn on a canvas (no emoji, so it renders the same everywhere).
+    function resultCanvas() {
+      const S = 1080, c = document.createElement('canvas');
+      c.width = S; c.height = S;
+      const x = c.getContext('2d');
+      const bg = x.createLinearGradient(0, 0, 0, S);
+      bg.addColorStop(0, '#10301a');
+      bg.addColorStop(1, state.won ? '#1f5a2a' : '#5a2414');
+      x.fillStyle = bg; x.fillRect(0, 0, S, S);
+      const font = function (px) { return px + 'px "Lilita One", Impact, "Arial Black", sans-serif'; };
+      x.textAlign = 'center';
+      x.fillStyle = '#f4ecd0'; x.font = font(92);
+      x.fillText((cfg.shareTitle || 'Dinodle') + ' #' + puzzleNumber(), S / 2, 140);
+      x.fillStyle = state.won ? '#9be28b' : '#ff9a7a'; x.font = font(58);
+      x.fillText((state.won ? state.attempts : 'X') + '/' + maxAttempts + '  ·  ' + computeScore() + ' ' + T('pts'), S / 2, 225);
+      const rows = statusRows(), cols = attributes.length;
+      const top = 280, avail = S - top - 150;
+      const cell = Math.min(100, Math.floor(avail / (rows.length * 1.18)), Math.floor(820 / (cols * 1.18)));
+      const gap = Math.round(cell * 0.18);
+      const left = (S - (cols * cell + (cols - 1) * gap)) / 2;
+      const y0 = top + (avail - (rows.length * cell + (rows.length - 1) * gap)) / 2;
+      const color = { correct: '#3fb950', close: '#e3b341', wrong: '#3a3f47' };
+      rows.forEach(function (r, i) {
+        r.forEach(function (s, j) {
+          const px = left + j * (cell + gap), py = y0 + i * (cell + gap), rad = cell * 0.18;
+          x.fillStyle = color[s] || color.wrong;
+          x.beginPath();
+          x.moveTo(px + rad, py); x.arcTo(px + cell, py, px + cell, py + cell, rad);
+          x.arcTo(px + cell, py + cell, px, py + cell, rad); x.arcTo(px, py + cell, px, py, rad);
+          x.arcTo(px, py, px + cell, py, rad); x.closePath(); x.fill();
+        });
+      });
+      x.fillStyle = '#c7f08a'; x.font = font(52);
+      x.fillText('dinodle.app', S / 2, S - 60);
+      return c;
+    }
+    function shareImage() {
+      const ready = document.fonts && document.fonts.load
+        ? document.fonts.load('58px "Lilita One"').catch(function () {}) : Promise.resolve();
+      ready.then(function () {
+        resultCanvas().toBlob(function (blob) {
+          if (!blob) return;
+          const name = 'dinodle-' + puzzleNumber() + '.png';
+          let file = null;
+          try { file = new File([blob], name, { type: 'image/png' }); } catch (e) {}
+          if (file && navigator.canShare && navigator.canShare({ files: [file] }) && /Mobi|Android/i.test(navigator.userAgent)) {
+            navigator.share({ files: [file], text: shareText() }).catch(function () {});
+            return;
+          }
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob); a.download = name;
+          document.body.appendChild(a); a.click(); a.remove();
+          setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
+          showMsg(T('image_saved'), 'good');
+        }, 'image/png');
+      });
+    }
+
+    function shareOrCopy(text) {
       const done = function () { showMsg(T('copied'), 'good'); };
       if (navigator.share && /Mobi|Android/i.test(navigator.userAgent)) {
         navigator.share({ text: text }).catch(function () {});
