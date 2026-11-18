@@ -3,11 +3,12 @@
  *
  *   node tools/build-pages.js
  *
- * Reads data/dinos.json (Spanish source) and data/i18n/dinos.{en,fr}.json and writes:
- *   dinosaurs/<slug>.html, fr/dinosaures/<slug>.html, es/dinosaurios/<slug>.html
- *   dinosaurs/index.html, fr/dinosaures/index.html, es/dinosaurios/index.html
+ * Reads data/dinos.json (Spanish source) and data/i18n/dinos.{en,fr,pt,de,it}.json and writes:
+ *   dinosaurs/<slug>.html, fr/dinosaures/<slug>.html, es/dinosaurios/<slug>.html,
+ *   pt/dinossauros/<slug>.html, de/dinosaurier/<slug>.html, it/dinosauri/<slug>.html
+ *   plus an index.html in each of those folders
  *   faq.html, sitemap.xml
- * The three dinosaur folders are fully generated: old .html files in them are
+ * The six dinosaur folders are fully generated: old .html files in them are
  * deleted on each run, so removed or renamed dinosaurs don't leave stale pages.
  * No dependencies. Safe to re-run any time the data changes.
  *
@@ -27,7 +28,8 @@ const readJSON = f => JSON.parse(fs.readFileSync(path.join(ROOT, f), 'utf8'));
 const readJSONOpt = f => { try { return readJSON(f); } catch (e) { return { fields: {}, description: {} }; } };
 
 const source = readJSON('data/dinos.json');
-const DICT = { es: null, en: readJSONOpt('data/i18n/dinos.en.json'), fr: readJSONOpt('data/i18n/dinos.fr.json') };
+const DICT = { es: null, en: readJSONOpt('data/i18n/dinos.en.json'), fr: readJSONOpt('data/i18n/dinos.fr.json'),
+  pt: readJSONOpt('data/i18n/dinos.pt.json'), de: readJSONOpt('data/i18n/dinos.de.json'), it: readJSONOpt('data/i18n/dinos.it.json') };
 
 // Geological order of the source (Spanish) period values, oldest first.
 const PERIOD_ORDER = ['Triásico temprano', 'Triásico medio', 'Triásico tardío', 'Jurásico temprano', 'Jurásico medio',
@@ -57,12 +59,45 @@ const FALLBACK = {
       'Oceanía': 'Océanie', 'Australia': 'Australie', 'Antártida': 'Antarctique' },
     discoverer: { 'Expedición polaco-mongola': 'Expédition polono-mongole' }
   },
-  es: {}
+  es: {},
+  pt: {
+    period: { 'Triásico temprano': 'Triássico Inferior', 'Triásico medio': 'Triássico Médio', 'Triásico tardío': 'Triássico Superior',
+      'Jurásico temprano': 'Jurássico Inferior', 'Jurásico medio': 'Jurássico Médio', 'Jurásico tardío': 'Jurássico Superior',
+      'Cretácico temprano': 'Cretáceo Inferior', 'Cretácico medio': 'Cretáceo Médio', 'Cretácico tardío': 'Cretáceo Superior' },
+    diet: { 'Carnívoro': 'Carnívoro', 'Herbívoro': 'Herbívoro', 'Omnívoro': 'Onívoro', 'Piscívoro': 'Piscívoro', 'Insectívoro': 'Insetívoro' },
+    tipo: { 'Terópodos': 'Terópodes', 'Ceratopsios': 'Ceratopsianos', 'Tireóforos': 'Tireóforos', 'Saurópodos': 'Saurópodes',
+      'Ornitópodos': 'Ornitópodes', 'Marginocéfalos': 'Marginocéfalos', 'Sauropodomorfos': 'Sauropodomorfos', 'Prosaurópodos': 'Prossaurópodes' },
+    continent: { 'Norteamérica': 'América do Norte', 'Sudamérica': 'América do Sul', 'Asia': 'Ásia', 'África': 'África', 'Europa': 'Europa',
+      'Oceanía': 'Oceania', 'Australia': 'Austrália', 'Antártida': 'Antártida' },
+    discoverer: { 'Expedición polaco-mongola': 'Expedição polono-mongol' }
+  },
+  de: {
+    period: { 'Triásico temprano': 'Frühtrias', 'Triásico medio': 'Mitteltrias', 'Triásico tardío': 'Spättrias',
+      'Jurásico temprano': 'Frühjura', 'Jurásico medio': 'Mitteljura', 'Jurásico tardío': 'Spätjura',
+      'Cretácico temprano': 'Frühkreide', 'Cretácico medio': 'Mittelkreide', 'Cretácico tardío': 'Spätkreide' },
+    diet: { 'Carnívoro': 'Fleischfresser', 'Herbívoro': 'Pflanzenfresser', 'Omnívoro': 'Allesfresser', 'Piscívoro': 'Fischfresser', 'Insectívoro': 'Insektenfresser' },
+    tipo: { 'Terópodos': 'Theropoden', 'Ceratopsios': 'Ceratopsier', 'Tireóforos': 'Thyreophoren', 'Saurópodos': 'Sauropoden',
+      'Ornitópodos': 'Ornithopoden', 'Marginocéfalos': 'Marginocephalen', 'Sauropodomorfos': 'Sauropodomorphen', 'Prosaurópodos': 'Prosauropoden' },
+    continent: { 'Norteamérica': 'Nordamerika', 'Sudamérica': 'Südamerika', 'Asia': 'Asien', 'África': 'Afrika', 'Europa': 'Europa',
+      'Oceanía': 'Ozeanien', 'Australia': 'Australien', 'Antártida': 'Antarktis' },
+    discoverer: { 'Expedición polaco-mongola': 'Polnisch-Mongolische Expedition' }
+  },
+  it: {
+    period: { 'Triásico temprano': 'Triassico inferiore', 'Triásico medio': 'Triassico medio', 'Triásico tardío': 'Triassico superiore',
+      'Jurásico temprano': 'Giurassico inferiore', 'Jurásico medio': 'Giurassico medio', 'Jurásico tardío': 'Giurassico superiore',
+      'Cretácico temprano': 'Cretaceo inferiore', 'Cretácico medio': 'Cretaceo medio', 'Cretácico tardío': 'Cretaceo superiore' },
+    diet: { 'Carnívoro': 'Carnivoro', 'Herbívoro': 'Erbivoro', 'Omnívoro': 'Onnivoro', 'Piscívoro': 'Piscivoro', 'Insectívoro': 'Insettivoro' },
+    tipo: { 'Terópodos': 'Teropodi', 'Ceratopsios': 'Ceratopsi', 'Tireóforos': 'Tireofori', 'Saurópodos': 'Sauropodi',
+      'Ornitópodos': 'Ornitopodi', 'Marginocéfalos': 'Marginocefali', 'Sauropodomorfos': 'Sauropodomorfi', 'Prosaurópodos': 'Prosauropodi' },
+    continent: { 'Norteamérica': 'America del Nord', 'Sudamérica': 'America del Sud', 'Asia': 'Asia', 'África': 'Africa', 'Europa': 'Europa',
+      'Oceanía': 'Oceania', 'Australia': 'Australia', 'Antártida': 'Antartide' },
+    discoverer: { 'Expedición polaco-mongola': 'Spedizione polacco-mongola' }
+  }
 };
 
-const LOCALE = { en: 'en-US', fr: 'fr-FR', es: 'es-ES' };
-const DIR = { en: 'dinosaurs', fr: 'fr/dinosaures', es: 'es/dinosaurios' };
-const LANGS = ['en', 'fr', 'es'];
+const LOCALE = { en: 'en-US', fr: 'fr-FR', es: 'es-ES', pt: 'pt-BR', de: 'de-DE', it: 'it-IT' };
+const DIR = { en: 'dinosaurs', fr: 'fr/dinosaures', es: 'es/dinosaurios', pt: 'pt/dinossauros', de: 'de/dinosaurier', it: 'it/dinosauri' };
+const LANGS = ['en', 'fr', 'es', 'pt', 'de', 'it'];
 
 // ---------- helpers ----------
 const esc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -91,11 +126,45 @@ function description(lang, d) {
   return (desc && desc[d.name]) || ''; // never show the Spanish text on EN/FR pages
 }
 // "Theropods" -> "theropod", "Théropodes" -> "théropode", "Terópodos" -> "terópodo".
-const groupSingular = (lang, d) => lcFirst(tr(lang, 'tipo', d.tipo)).replace(/s$/, '');
+// PT/DE/IT plurals don't just drop an "s", so they use explicit singulars (all masculine;
+// German nouns keep their capital).
+const GROUP_SING = {
+  pt: { 'Terópodos': 'terópode', 'Ceratopsios': 'ceratopsiano', 'Tireóforos': 'tireóforo', 'Saurópodos': 'saurópode', 'Ornitópodos': 'ornitópode',
+    'Marginocéfalos': 'marginocéfalo', 'Sauropodomorfos': 'sauropodomorfo', 'Prosaurópodos': 'prossaurópode' },
+  de: { 'Terópodos': 'Theropode', 'Ceratopsios': 'Ceratopsier', 'Tireóforos': 'Thyreophore', 'Saurópodos': 'Sauropode', 'Ornitópodos': 'Ornithopode',
+    'Marginocéfalos': 'Marginocephale', 'Sauropodomorfos': 'Sauropodomorph', 'Prosaurópodos': 'Prosauropode' },
+  it: { 'Terópodos': 'teropode', 'Ceratopsios': 'ceratopsiano', 'Tireóforos': 'tireoforo', 'Saurópodos': 'sauropode', 'Ornitópodos': 'ornitopode',
+    'Marginocéfalos': 'marginocefalo', 'Sauropodomorfos': 'sauropodomorfo', 'Prosaurópodos': 'prosauropode' }
+};
+const groupSingular = (lang, d) => (GROUP_SING[lang] && GROUP_SING[lang][d.tipo]) ||
+  (lang === 'de' ? tr(lang, 'tipo', d.tipo) : lcFirst(tr(lang, 'tipo', d.tipo)).replace(/s$/, ''));
+// German periods: die Kreide / die Trias (feminine) but der Jura (masculine).
+const deArt = d => /^Jur/.test(d.period) ? 'dem' : 'der';
+const deAus = d => `aus ${deArt(d)} ${tr('de', 'period', d.period)}`; // "aus der Spätkreide", "aus dem Spätjura"
+const deIn = d => (deArt(d) === 'dem' ? 'im ' : 'in der ') + tr('de', 'period', d.period); // "in der Spätkreide", "im Spätjura"
+// "found in <continent>": every PT continent name is feminine ("na Ásia"); German uses the article for Antarctica.
+function contIn(lang, d) {
+  const c = tr(lang, 'continent', d.continent);
+  if (lang === 'pt') return 'na ' + c;
+  if (lang === 'de') return (d.continent === 'Antártida' ? 'in der ' : 'in ') + c;
+  return 'in ' + c;
+}
+// "discovered by X" with the right preposition/article for group names.
+const DISC_BY = {
+  pt: { 'Expedición polaco-mongola': 'pela expedição polono-mongol' },
+  de: { 'Expedición polaco-mongola': 'von der Polnisch-Mongolischen Expedition' },
+  it: { 'Expedición polaco-mongola': 'dalla spedizione polacco-mongola' }
+};
+function discBy(lang, d) {
+  const m = DISC_BY[lang] && DISC_BY[lang][d.discoverer];
+  if (m) return m;
+  return ({ pt: 'por ', de: 'von ', it: 'da ' })[lang] + tr(lang, 'discoverer', d.discoverer);
+}
 const groupPlural = (lang, d) => lcFirst(tr(lang, 'tipo', d.tipo));
 
 // ---------- prepare the data ----------
-const missing = { en: [], fr: [] };
+const TRANSLATED = LANGS.filter(l => l !== 'es'); // languages whose data comes from data/i18n
+const missing = {}; TRANSLATED.forEach(l => { missing[l] = []; });
 const dinos = source.filter(d => d && d.name).map(d => Object.assign({}, d, { genus: genusOf(d.name) }));
 // Slug = lowercase genus. If a genus appears twice, the first entry keeps the
 // genus URL (stable links) and later ones use the full name (genus-species).
@@ -109,7 +178,7 @@ dinos.forEach(d => {
   d.slug = slug;
   d.title = genusTaken ? d.name : d.genus; // short name used in H1 and links
   d.periodRank = PERIOD_ORDER.indexOf(d.period);
-  ['en', 'fr'].forEach(l => { if (!description(l, d)) missing[l].push(d.name); });
+  TRANSLATED.forEach(l => { if (!description(l, d)) missing[l].push(d.name); });
 });
 const N = dinos.length;
 const rankBy = key => { // 1 = largest; ties share a rank
@@ -227,6 +296,102 @@ const T = {
     idxIntro: n => `Estos son los ${n} dinosaurios que puedes adivinar en Dinodle, agrupados por periodo geológico del más antiguo al más reciente y por orden alfabético. Cada ficha indica su tamaño, peso, dieta, grupo y dónde se hallaron sus fósiles.`,
     count: n => `${n} dinosaurio${n === 1 ? '' : 's'}`,
     langs: 'Idiomas'
+  },
+  pt: {
+    back: '← Dinodle', home: 'Dinodle', dinosaurs: 'Dinossauros', langName: 'Português',
+    pageTitle: d => `${d.name}: tamanho, dieta, período | Dinodle`,
+    tagline: d => `um ${groupSingular('pt', d)} ${dietAdj('pt', d)} do ${tr('pt', 'period', d.period)}`,
+    metaDesc: d => `${d.name}: um ${groupSingular('pt', d)} ${dietAdj('pt', d)} do ${tr('pt', 'period', d.period)} (há ~${d.era} milhões de anos), com cerca de ${num('pt', d.length)} m e ${num('pt', d.weight)} kg, encontrado ${contIn('pt', d)}.`,
+    factsTitle: 'Ficha técnica', aboutTitle: d => `Sobre o ${d.title}`,
+    rows: { name: 'Nome científico', period: 'Período', diet: 'Dieta', group: 'Grupo', weight: 'Peso estimado', length: 'Comprimento estimado', found: 'Fósseis encontrados em', disc: 'Descoberto por' },
+    ago: era => `há ~${era} milhões de anos`,
+    disc: d => `${tr('pt', 'discoverer', d.discoverer)} (${d.discoveredYear})`,
+    prose: d => {
+      const p = [];
+      p.push(`${d.name} foi um ${groupSingular('pt', d)} ${dietAdj('pt', d)} que viveu durante o ${tr('pt', 'period', d.period)}, há cerca de ${d.era} milhões de anos. Seus fósseis foram encontrados ${contIn('pt', d)}.`);
+      p.push(`Os cientistas estimam que media cerca de ${num('pt', d.length)} ${d.length === 1 ? 'metro' : 'metros'} de comprimento e pesava por volta de ${num('pt', d.weight)} kg — ${weightCompare('pt', d.weight)}.`);
+      const fl = PERIOD_FLAVOR.pt[d.period]; if (fl) p.push(fl);
+      const dl = DIET_FLAVOR.pt[d.diet]; if (dl) p.push(dl);
+      const lr = lengthRank(d.length), wr = weightRank(d.weight);
+      p.push(`Entre os ${N} dinossauros do Dinodle, ocupa ${lr === 1 ? 'o primeiro lugar (o mais comprido)' : 'o ' + lr + 'º lugar'} em comprimento e ${wr === 1 ? 'o primeiro lugar (o mais pesado)' : 'o ' + wr + 'º lugar'} em peso.`);
+      if (d.discoverer && d.discoveredYear) p.push(`Foi descoberto ${discBy('pt', d)} em ${d.discoveredYear}, há ${YEAR - d.discoveredYear} anos.`);
+      return p;
+    },
+    compare: 'Compare com', relatedLine: o => `${groupSingular('pt', o)} do ${tr('pt', 'period', o.period)}`,
+    cta: 'Jogar o Dinodle de hoje →', ctaText: 'Você consegue adivinhar o dinossauro secreto do dia pelo período, dieta, tamanho e continente?',
+    secret: 'O dinossauro secreto do dia nunca é revelado aqui.',
+    wiki: d => `Saiba mais sobre ${d.genus} na Wikipédia`,
+    allDinos: 'Todos os dinossauros',
+    idxTitle: 'Todos os dinossauros do Dinodle — fichas por período | Dinodle',
+    idxH1: 'Fichas de dinossauros',
+    idxDesc: n => `Fichas dos ${n} dinossauros do Dinodle, do Triássico ao Cretáceo Superior: tamanho, peso, dieta, período e onde seus fósseis foram encontrados.`,
+    idxIntro: n => `Estes são os ${n} dinossauros que você pode adivinhar no Dinodle, agrupados por período geológico, do mais antigo ao mais recente, e em ordem alfabética. Cada ficha indica o tamanho, o peso, a dieta, o grupo e onde os fósseis foram encontrados.`,
+    count: n => `${n} dinossauro${n === 1 ? '' : 's'}`,
+    langs: 'Idiomas'
+  },
+  de: {
+    back: '← Dinodle', home: 'Dinodle', dinosaurs: 'Dinosaurier', langName: 'Deutsch',
+    pageTitle: d => `${d.name}: Größe, Ernährung, Zeitalter | Dinodle`,
+    tagline: d => `ein ${dietAdj('de', d)}er ${groupSingular('de', d)} ${deAus(d)}`,
+    metaDesc: d => `${d.name}: ein ${dietAdj('de', d)}er ${groupSingular('de', d)} ${deAus(d)} (vor ~${d.era} Millionen Jahren), etwa ${num('de', d.length)} m lang und ${num('de', d.weight)} kg schwer, gefunden ${contIn('de', d)}.`,
+    factsTitle: 'Steckbrief', aboutTitle: d => `Über ${d.title}`,
+    rows: { name: 'Wissenschaftlicher Name', period: 'Zeitalter', diet: 'Ernährung', group: 'Gruppe', weight: 'Geschätztes Gewicht', length: 'Geschätzte Länge', found: 'Fossilien gefunden in', disc: 'Entdeckt von' },
+    ago: era => `vor ~${era} Millionen Jahren`,
+    disc: d => `${tr('de', 'discoverer', d.discoverer)} (${d.discoveredYear})`,
+    prose: d => {
+      const p = [];
+      p.push(`${d.name} war ein ${dietAdj('de', d)}er ${groupSingular('de', d)}, der ${deIn(d)} lebte, vor etwa ${d.era} Millionen Jahren. Seine Fossilien wurden ${contIn('de', d)} gefunden.`);
+      p.push(`Fachleute schätzen, dass er etwa ${num('de', d.length)} Meter lang war und rund ${num('de', d.weight)} kg wog — ${weightCompare('de', d.weight)}.`);
+      const fl = PERIOD_FLAVOR.de[d.period]; if (fl) p.push(fl);
+      const dl = DIET_FLAVOR.de[d.diet]; if (dl) p.push(dl);
+      const lr = lengthRank(d.length), wr = weightRank(d.weight);
+      p.push(`Unter den ${N} Dinosauriern in Dinodle belegt er bei der Länge ${lr === 1 ? 'Platz 1 (der längste)' : 'Platz ' + lr} und beim Gewicht ${wr === 1 ? 'Platz 1 (der schwerste)' : 'Platz ' + wr}.`);
+      if (d.discoverer && d.discoveredYear) p.push(`Er wurde ${d.discoveredYear} ${discBy('de', d)} entdeckt, vor ${YEAR - d.discoveredYear} Jahren.`);
+      return p;
+    },
+    compare: 'Vergleiche mit', relatedLine: o => `${groupSingular('de', o)} ${deAus(o)}`,
+    cta: 'Das heutige Dinodle spielen →', ctaText: 'Errätst du den geheimen Dinosaurier des Tages anhand von Zeitalter, Ernährung, Größe und Kontinent?',
+    secret: 'Der geheime Dinosaurier des Tages wird hier nie verraten.',
+    wiki: d => `Mehr über ${d.genus} auf Wikipedia`,
+    allDinos: 'Alle Dinosaurier',
+    idxTitle: 'Alle Dinosaurier in Dinodle — Steckbriefe nach Zeitalter | Dinodle',
+    idxH1: 'Dinosaurier-Steckbriefe',
+    idxDesc: n => `Steckbriefe der ${n} Dinosaurier in Dinodle, von der Trias bis zur Spätkreide: Größe, Gewicht, Ernährung, Zeitalter und Fundort der Fossilien.`,
+    idxIntro: n => `Hier sind alle ${n} Dinosaurier, die du in Dinodle erraten kannst, nach Erdzeitalter vom ältesten zum jüngsten gruppiert und alphabetisch sortiert. Jeder Steckbrief nennt Größe, Gewicht, Ernährung, Gruppe und Fundort der Fossilien.`,
+    count: n => `${n} Dinosaurier`,
+    langs: 'Sprachen'
+  },
+  it: {
+    back: '← Dinodle', home: 'Dinodle', dinosaurs: 'Dinosauri', langName: 'Italiano',
+    pageTitle: d => `${d.name}: dimensioni, dieta, periodo | Dinodle`,
+    tagline: d => `un ${groupSingular('it', d)} ${dietAdj('it', d)} del ${tr('it', 'period', d.period)}`,
+    metaDesc: d => `${d.name}: un ${groupSingular('it', d)} ${dietAdj('it', d)} del ${tr('it', 'period', d.period)} (~${d.era} milioni di anni fa), lungo circa ${num('it', d.length)} m e pesante circa ${num('it', d.weight)} kg, ritrovato ${contIn('it', d)}.`,
+    factsTitle: 'Scheda', aboutTitle: d => `Informazioni su ${d.title}`,
+    rows: { name: 'Nome scientifico', period: 'Periodo', diet: 'Dieta', group: 'Gruppo', weight: 'Peso stimato', length: 'Lunghezza stimata', found: 'Fossili ritrovati in', disc: 'Scoperto da' },
+    ago: era => `~${era} milioni di anni fa`,
+    disc: d => `${tr('it', 'discoverer', d.discoverer)} (${d.discoveredYear})`,
+    prose: d => {
+      const p = [];
+      p.push(`${d.name} era un ${groupSingular('it', d)} ${dietAdj('it', d)} vissuto nel ${tr('it', 'period', d.period)}, circa ${d.era} milioni di anni fa. I suoi fossili sono stati ritrovati ${contIn('it', d)}.`);
+      p.push(`Gli scienziati stimano che fosse lungo circa ${num('it', d.length)} ${d.length === 1 ? 'metro' : 'metri'} e pesasse circa ${num('it', d.weight)} kg — ${weightCompare('it', d.weight)}.`);
+      const fl = PERIOD_FLAVOR.it[d.period]; if (fl) p.push(fl);
+      const dl = DIET_FLAVOR.it[d.diet]; if (dl) p.push(dl);
+      const lr = lengthRank(d.length), wr = weightRank(d.weight);
+      p.push(`Tra i ${N} dinosauri di Dinodle, è ${lr === 1 ? 'al primo posto (il più lungo)' : 'al ' + lr + 'º posto'} per lunghezza e ${wr === 1 ? 'al primo posto (il più pesante)' : 'al ' + wr + 'º posto'} per peso.`);
+      if (d.discoverer && d.discoveredYear) p.push(`Fu scoperto ${discBy('it', d)} nel ${d.discoveredYear}, ${YEAR - d.discoveredYear} anni fa.`);
+      return p;
+    },
+    compare: 'Confrontalo con', relatedLine: o => `${groupSingular('it', o)} del ${tr('it', 'period', o.period)}`,
+    cta: 'Gioca al Dinodle di oggi →', ctaText: 'Riesci a indovinare il dinosauro segreto del giorno dal periodo, dalla dieta, dalle dimensioni e dal continente?',
+    secret: 'Il dinosauro segreto del giorno non viene mai svelato qui.',
+    wiki: d => `Scopri di più su ${d.genus} su Wikipedia`,
+    allDinos: 'Tutti i dinosauri',
+    idxTitle: 'Tutti i dinosauri di Dinodle — schede per periodo | Dinodle',
+    idxH1: 'Schede dei dinosauri',
+    idxDesc: n => `Le schede dei ${n} dinosauri di Dinodle, dal Triassico al Cretaceo superiore: dimensioni, peso, dieta, periodo e luogo di ritrovamento dei fossili.`,
+    idxIntro: n => `Ecco tutti i ${n} dinosauri che puoi indovinare in Dinodle, raggruppati per periodo geologico dal più antico al più recente e in ordine alfabetico. Ogni scheda indica dimensioni, peso, dieta, gruppo e luogo di ritrovamento dei fossili.`,
+    count: n => `${n} dinosaur${n === 1 ? 'o' : 'i'}`,
+    langs: 'Lingue'
   }
 };
 
@@ -235,7 +400,11 @@ function dietAdj(lang, d) {
   const M = {
     en: { 'Carnívoro': 'carnivorous', 'Herbívoro': 'herbivorous', 'Omnívoro': 'omnivorous', 'Piscívoro': 'fish-eating', 'Insectívoro': 'insect-eating' },
     fr: { 'Carnívoro': 'carnivore', 'Herbívoro': 'herbivore', 'Omnívoro': 'omnivore', 'Piscívoro': 'piscivore', 'Insectívoro': 'insectivore' },
-    es: { 'Carnívoro': 'carnívoro', 'Herbívoro': 'herbívoro', 'Omnívoro': 'omnívoro', 'Piscívoro': 'piscívoro', 'Insectívoro': 'insectívoro' }
+    es: { 'Carnívoro': 'carnívoro', 'Herbívoro': 'herbívoro', 'Omnívoro': 'omnívoro', 'Piscívoro': 'piscívoro', 'Insectívoro': 'insectívoro' },
+    pt: { 'Carnívoro': 'carnívoro', 'Herbívoro': 'herbívoro', 'Omnívoro': 'onívoro', 'Piscívoro': 'piscívoro', 'Insectívoro': 'insetívoro' },
+    // German: uninflected stem; templates add the "-er" ending after "ein" ("ein fleischfressender Theropode").
+    de: { 'Carnívoro': 'fleischfressend', 'Herbívoro': 'pflanzenfressend', 'Omnívoro': 'allesfressend', 'Piscívoro': 'fischfressend', 'Insectívoro': 'insektenfressend' },
+    it: { 'Carnívoro': 'carnivoro', 'Herbívoro': 'erbivoro', 'Omnívoro': 'onnivoro', 'Piscívoro': 'piscivoro', 'Insectívoro': 'insettivoro' }
   };
   return M[lang][d.diet] || lcFirst(tr(lang, 'diet', d.diet));
 }
@@ -255,7 +424,19 @@ function weightCompare(lang, kg) {
     es: [[6000, x => `más o menos lo que ${n(x)} elefante${pl(x) ? 's' : ''} africano${pl(x) ? 's' : ''}`],
       [1500, x => `aproximadamente el peso de ${n(x)} coche${pl(x) ? 's' : ''}`],
       [70, x => `unas ${n(x)} veces el peso de un humano adulto`],
-      [0, () => kg >= 30 ? 'algo menos que un humano adulto' : kg >= 5 ? 'más o menos lo que un perro mediano' : 'menos que un gato doméstico']]
+      [0, () => kg >= 30 ? 'algo menos que un humano adulto' : kg >= 5 ? 'más o menos lo que un perro mediano' : 'menos que un gato doméstico']],
+    pt: [[6000, x => pl(x) ? `mais ou menos o peso de ${n(x)} elefantes-africanos` : 'mais ou menos o peso de um elefante-africano'],
+      [1500, x => pl(x) ? `aproximadamente o peso de ${n(x)} carros` : 'aproximadamente o peso de um carro'],
+      [70, x => pl(x) ? `cerca de ${n(x)} vezes o peso de um ser humano adulto` : 'mais ou menos o peso de um ser humano adulto'],
+      [0, () => kg >= 30 ? 'um pouco menos que um ser humano adulto' : kg >= 5 ? 'mais ou menos o peso de um cão de porte médio' : 'menos que um gato doméstico']],
+    de: [[6000, x => pl(x) ? `etwa so schwer wie ${n(x)} Afrikanische Elefanten` : 'etwa so schwer wie ein Afrikanischer Elefant'],
+      [1500, x => pl(x) ? `ungefähr so schwer wie ${n(x)} Autos` : 'ungefähr so schwer wie ein Auto'],
+      [70, x => pl(x) ? `etwa das ${n(x)}-Fache eines erwachsenen Menschen` : 'etwa so schwer wie ein erwachsener Mensch'],
+      [0, () => kg >= 30 ? 'etwas leichter als ein erwachsener Mensch' : kg >= 5 ? 'etwa so schwer wie ein mittelgroßer Hund' : 'leichter als eine Hauskatze']],
+    it: [[6000, x => pl(x) ? `più o meno il peso di ${n(x)} elefanti africani` : 'più o meno il peso di un elefante africano'],
+      [1500, x => pl(x) ? `circa il peso di ${n(x)} automobili` : 'circa il peso di un’automobile'],
+      [70, x => pl(x) ? `circa ${n(x)} volte il peso di un essere umano adulto` : 'più o meno il peso di un essere umano adulto'],
+      [0, () => kg >= 30 ? 'un po’ meno di un essere umano adulto' : kg >= 5 ? 'più o meno il peso di un cane di taglia media' : 'meno di un gatto domestico']]
   };
   const ref = { 6000: 6000, 1500: 1500, 70: 70, 0: 1 };
   const hit = W[lang].find(([min]) => kg >= min) || W[lang][W[lang].length - 1];
@@ -288,12 +469,42 @@ const PERIOD_FLAVOR = {
     'Cretácico temprano': 'En el Cretácico temprano aparecieron las primeras plantas con flores y los continentes siguieron separándose.',
     'Cretácico medio': 'El Cretácico medio fue una época cálida con mares altos, hogar de algunos de los mayores depredadores y saurópodos de la historia.',
     'Cretácico tardío': 'El Cretácico tardío fue el último capítulo de la era de los dinosaurios, que terminó con el impacto de un asteroide hace unos 66 millones de años.'
+  },
+  pt: {
+    'Triásico tardío': 'O Triássico Superior foi o alvorecer dos dinossauros: eles ainda eram de porte pequeno a médio e dividiam o mundo com muitos outros répteis.',
+    'Jurásico temprano': 'No Jurássico Inferior, os dinossauros se tornaram os animais terrestres dominantes após uma extinção em massa no fim do Triássico.',
+    'Jurásico medio': 'O Jurássico Médio é uma época pouco conhecida, em que grandes saurópodes e os primeiros grandes terópodes se espalhavam pelos continentes.',
+    'Jurásico tardío': 'O Jurássico Superior foi a era dos saurópodes gigantes, enquanto o supercontinente Pangeia se fragmentava.',
+    'Cretácico temprano': 'No Cretáceo Inferior surgiram as primeiras plantas com flores, e os continentes continuaram a se afastar.',
+    'Cretácico medio': 'O Cretáceo Médio foi uma época quente, com o nível do mar alto, lar de alguns dos maiores predadores e saurópodes de todos os tempos.',
+    'Cretácico tardío': 'O Cretáceo Superior foi o último capítulo da era dos dinossauros, que terminou com o impacto de um asteroide há cerca de 66 milhões de anos.'
+  },
+  de: {
+    'Triásico tardío': 'Die Spättrias war die Morgendämmerung der Dinosaurier: Sie waren noch klein bis mittelgroß und teilten sich die Welt mit vielen anderen Reptilien.',
+    'Jurásico temprano': 'Im Frühjura wurden die Dinosaurier nach einem Massenaussterben am Ende der Trias zu den vorherrschenden Landtieren.',
+    'Jurásico medio': 'Der Mitteljura ist eine wenig bekannte Zeit, in der sich große Sauropoden und frühe große Theropoden über die Kontinente ausbreiteten.',
+    'Jurásico tardío': 'Der Spätjura war das Zeitalter der riesigen Sauropoden, während der Superkontinent Pangaea zerbrach.',
+    'Cretácico temprano': 'In der Frühkreide erschienen die ersten Blütenpflanzen, und die Kontinente drifteten weiter auseinander.',
+    'Cretácico medio': 'Die Mittelkreide war eine warme Zeit mit hohem Meeresspiegel und Heimat einiger der größten Raubtiere und Sauropoden aller Zeiten.',
+    'Cretácico tardío': 'Die Spätkreide war das letzte Kapitel im Zeitalter der Dinosaurier, das vor etwa 66 Millionen Jahren mit einem Asteroideneinschlag endete.'
+  },
+  it: {
+    'Triásico tardío': 'Il Triassico superiore fu l’alba dei dinosauri: erano ancora di taglia piccola o media e condividevano il mondo con molti altri rettili.',
+    'Jurásico temprano': 'Nel Giurassico inferiore i dinosauri divennero gli animali terrestri dominanti dopo un’estinzione di massa alla fine del Triassico.',
+    'Jurásico medio': 'Il Giurassico medio è un’epoca poco conosciuta, in cui i grandi sauropodi e i primi grandi teropodi si diffondevano nei continenti.',
+    'Jurásico tardío': 'Il Giurassico superiore fu l’epoca dei sauropodi giganti, mentre il supercontinente Pangea si frammentava.',
+    'Cretácico temprano': 'Nel Cretaceo inferiore comparvero le prime piante con fiori e i continenti continuarono ad allontanarsi.',
+    'Cretácico medio': 'Il Cretaceo medio fu un periodo caldo con mari alti, popolato da alcuni dei più grandi predatori e sauropodi di sempre.',
+    'Cretácico tardío': 'Il Cretaceo superiore fu l’ultimo capitolo dell’era dei dinosauri, conclusasi con l’impatto di un asteroide circa 66 milioni di anni fa.'
   }
 };
 const DIET_FLAVOR = {
   en: { 'Carnívoro': 'As a meat-eater, it hunted or scavenged other animals.', 'Herbívoro': 'As a plant-eater, it fed on the ferns, conifers and other vegetation of its time.', 'Omnívoro': 'As an omnivore, it could eat both plants and small animals.' },
   fr: { 'Carnívoro': 'Carnivore, il chassait ou charognait d’autres animaux.', 'Herbívoro': 'Herbivore, il se nourrissait de fougères, de conifères et d’autres végétaux de son époque.', 'Omnívoro': 'Omnivore, il pouvait manger aussi bien des plantes que de petits animaux.' },
-  es: { 'Carnívoro': 'Como carnívoro, cazaba o carroñeaba a otros animales.', 'Herbívoro': 'Como herbívoro, se alimentaba de helechos, coníferas y otras plantas de su época.', 'Omnívoro': 'Como omnívoro, podía comer tanto plantas como pequeños animales.' }
+  es: { 'Carnívoro': 'Como carnívoro, cazaba o carroñeaba a otros animales.', 'Herbívoro': 'Como herbívoro, se alimentaba de helechos, coníferas y otras plantas de su época.', 'Omnívoro': 'Como omnívoro, podía comer tanto plantas como pequeños animales.' },
+  pt: { 'Carnívoro': 'Como carnívoro, caçava outros animais ou se alimentava de carcaças.', 'Herbívoro': 'Como herbívoro, alimentava-se de samambaias, coníferas e outras plantas da sua época.', 'Omnívoro': 'Como onívoro, podia comer tanto plantas quanto pequenos animais.' },
+  de: { 'Carnívoro': 'Als Fleischfresser jagte er andere Tiere oder fraß Aas.', 'Herbívoro': 'Als Pflanzenfresser ernährte er sich von Farnen, Nadelbäumen und anderen Pflanzen seiner Zeit.', 'Omnívoro': 'Als Allesfresser konnte er sowohl Pflanzen als auch kleine Tiere fressen.' },
+  it: { 'Carnívoro': 'Da carnivoro, cacciava altri animali o si nutriva di carcasse.', 'Herbívoro': 'Da erbivoro, si nutriva di felci, conifere e altre piante del suo tempo.', 'Omnívoro': 'Da onnivoro, poteva mangiare sia piante sia piccoli animali.' }
 };
 
 // ---------- shared page shell ----------
@@ -331,7 +542,7 @@ function shell({ lang, title, desc, canonical, alts, ogType, ld, body }) {
     ? LANGS.map(l => `<link rel="alternate" hreflang="${l}" href="${esc(alts[l])}">`).join('\n') +
       `\n<link rel="alternate" hreflang="x-default" href="${esc(alts.en)}">`
     : `<link rel="alternate" hreflang="en" href="${esc(canonical)}">\n<link rel="alternate" hreflang="x-default" href="${esc(canonical)}">`;
-  const ogLocale = { en: 'en_US', fr: 'fr_FR', es: 'es_ES' }[lang];
+  const ogLocale = { en: 'en_US', fr: 'fr_FR', es: 'es_ES', pt: 'pt_BR', de: 'de_DE', it: 'it_IT' }[lang];
   return `<!DOCTYPE html>
 <html lang="${lang}">
 <head>
@@ -474,7 +685,7 @@ const FAQ = [
   ['What are bones and clues?', 'You dig up bones 🦴 as you play: at attempts 3, 6 and 9 in Normal mode (2, 4 and 6 in Easy). Each clue costs one bone. Clues reveal who discovered the dinosaur, a short description and, as the very last clue, its silhouette.'],
   ['How is my score calculated?', 'You start with 1000 points. You lose 100 points every 3 attempts and 150 points for each bone you spend on a clue. If you do not find the dinosaur within 12 attempts, the score is 0. Your streak continues as long as you play every day.'],
   ['When does the daily dinosaur change?', 'A new secret dinosaur appears every day at midnight, Paris time (Central European Time), and it is the same for every player in the world. A countdown at the end of the game shows how long until the next one.'],
-  ['Which languages is Dinodle available in?', 'Dinodle is available in English, French and Spanish. The game picks your browser language automatically, and you can switch at any time with the language buttons at the top of the game. The dinosaur fact pages also exist in all three languages.'],
+  ['Which languages is Dinodle available in?', 'Dinodle is available in English, French, Spanish, Portuguese, German and Italian. The game picks your browser language automatically, and you can switch at any time with the language buttons at the top of the game. The dinosaur fact pages also exist in all six languages.'],
   ['How do I share my result?', 'When you finish, press the Share button. It copies a grid of coloured squares with the puzzle number, so your friends can see how you did without the answer being spoiled.'],
   ['Where does the dinosaur information come from?', 'Facts such as period, diet, size and discovery are compiled from public scientific sources and Wikipedia, and rounded to keep the game fair. Size and weight estimates vary between studies. Silhouettes come from PhyloPic artists and are credited on the image credits page.'],
   ['Do I need an account? Is my data stored?', 'No account is needed and Dinodle is free. Your games, statistics and settings are saved only in your own browser (local storage). See the privacy page for details.'],
@@ -546,12 +757,17 @@ LANGS.forEach(lang => {
 write('faq.html', faqPage()); count++;
 write('sitemap.xml', sitemap());
 
-console.log(`Dinodle pages: ${N} dinosaurs x 3 languages + 3 indexes + FAQ = ${count} HTML pages, plus sitemap.xml (${7 + 3 + N * 3} URLs).`);
-['en', 'fr'].forEach(l => {
+const L = LANGS.length;
+console.log(`Dinodle pages: ${N} dinosaurs x ${L} languages + ${L} indexes + FAQ = ${count} HTML pages, plus sitemap.xml (${7 + L + N * L} URLs).`);
+TRANSLATED.forEach(l => {
   if (missing[l].length) console.warn(`Warning: ${missing[l].length} dinosaur(s) have no ${l.toUpperCase()} description in data/i18n/dinos.${l}.json (description omitted): ${missing[l].join(', ')}`);
 });
+// A value is untranslated when neither data/i18n nor FALLBACK has an entry for it
+// (PT shares some words with Spanish, e.g. "Carnívoro", so equal strings are fine).
+const hasEntry = (l, f, v) => !!((DICT[l] && DICT[l].fields && DICT[l].fields[f] && DICT[l].fields[f][v] != null) ||
+  (FALLBACK[l][f] && FALLBACK[l][f][v] != null));
 const untranslated = [];
-['en', 'fr'].forEach(l => dinos.forEach(d => ['period', 'diet', 'tipo', 'continent'].forEach(f => {
-  if (d[f] != null && tr(l, f, d[f]) === d[f] && !/^(Asia|Europa)$/.test(d[f])) untranslated.push(`${l}:${f}=${d[f]}`);
+TRANSLATED.forEach(l => dinos.forEach(d => ['period', 'diet', 'tipo', 'continent'].forEach(f => {
+  if (d[f] != null && !hasEntry(l, f, d[f])) untranslated.push(`${l}:${f}=${d[f]}`);
 })));
 if (untranslated.length) console.warn('Warning: untranslated field values (shown in Spanish): ' + [...new Set(untranslated)].join(', '));

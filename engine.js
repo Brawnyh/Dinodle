@@ -555,20 +555,23 @@
 
     function onSubmit(e) {
       e.preventDefault();
-      if (state.over) return;
       closeAutocomplete();
-      const raw = inputEl.value.trim();
-      if (!raw) return;
+      submitGuess(inputEl.value.trim());
+    }
+    // Returns 'over' | 'empty' | 'unknown' | 'repeat' | 'ok'.
+    function submitGuess(raw) {
+      if (state.over) return 'over';
+      if (!raw) return 'empty';
       const item = findItem(raw);
       if (!item) {
         showMsg(T('not_in_list', { raw: raw }), 'bad');
         inputEl.classList.add('shake');
         setTimeout(function () { inputEl.classList.remove('shake'); }, 400);
-        return;
+        return 'unknown';
       }
       if (state.guesses.indexOf(item.name) !== -1) {
         showMsg(T('already', { name: item.name }), 'bad');
-        return;
+        return 'repeat';
       }
       state.guesses.push(item.name);
       state.attempts++;
@@ -583,6 +586,7 @@
         finish();
         global.dispatchEvent(new Event(state.won ? 'dinodle:win' : 'dinodle:lose'));
       }
+      return 'ok';
     }
 
     function buyHint(h) {
@@ -938,7 +942,20 @@
       bannerEl.className = 'banner'; bannerEl.innerHTML = '';
       document.body.classList.remove('extinct');
       showMsg(''); render();
+      global.dispatchEvent(new Event('dinodle:newgame'));
     }
+
+    // Small API for streamer.js (chat voting).
+    global.DinodleGame = {
+      guess: submitGuess,
+      find: findItem,
+      newPractice: newPractice,
+      puzzleNumber: puzzleNumber,
+      isOver: function () { return state.over; },
+      isPractice: function () { return state.practice; },
+      guessed: function (name) { return state.guesses.indexOf(name) !== -1; }
+    };
+    global.dispatchEvent(new Event('dinodle:ready'));
   }
 
   global.createGame = createGame;
