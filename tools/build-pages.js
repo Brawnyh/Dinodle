@@ -721,7 +721,6 @@ function sitemap() {
     `<lastmod>${today}</lastmod><changefreq>${freq}</changefreq><priority>${prio}</priority></url>`;
   const lines = [
     u(SITE + '/', 'daily', '1.0'),
-    u(SITE + '/?mode=easy', 'daily', '0.8'),
     u(SITE + '/faq.html', 'monthly', '0.6'),
     u(SITE + '/about.html', 'monthly', '0.5'),
     u(SITE + '/contact.html', 'yearly', '0.3'),
@@ -758,7 +757,7 @@ write('faq.html', faqPage()); count++;
 write('sitemap.xml', sitemap());
 
 const L = LANGS.length;
-console.log(`Dinodle pages: ${N} dinosaurs x ${L} languages + ${L} indexes + FAQ = ${count} HTML pages, plus sitemap.xml (${7 + L + N * L} URLs).`);
+console.log(`Dinodle pages: ${N} dinosaurs x ${L} languages + ${L} indexes + FAQ = ${count} HTML pages, plus sitemap.xml (${6 + L + N * L} URLs).`);
 TRANSLATED.forEach(l => {
   if (missing[l].length) console.warn(`Warning: ${missing[l].length} dinosaur(s) have no ${l.toUpperCase()} description in data/i18n/dinos.${l}.json (description omitted): ${missing[l].join(', ')}`);
 });
