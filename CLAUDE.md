@@ -15,7 +15,7 @@ Owner priorities: Dinodle first. Make it presentable, English-first (with French
 | File | Purpose |
 |------|---------|
 | `index.html` | The game page (home) with the Normal/Easy switch |
-| `i18n.js` | UI strings EN/FR/ES, language detection/switch, `localize()` for data |
+| `i18n.js` | UI strings EN/FR/ES/PT/DE/IT, language detection/switch, `localize()` for data |
 | `dinos.js` | Game config: attributes, compare rules, hints, Easy-mode filter |
 | `data/i18n/dinos.{en,fr,pt,de,it}.json` | Data translations: `fields` value maps + `description` by name (data source language is Spanish) |
 | `img/silhouettes/`, `data/silhouette-credits.json`, `credits.html` | Self-hosted PhyloPic silhouettes (CC0/PD/CC BY, a few CC BY-SA; never NC) with per-image credits |
