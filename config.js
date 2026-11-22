@@ -1,11 +1,10 @@
 /* config.js — site settings the owner fills in.
    SUPPORT_LINKS: donation pages, shown as buttons after a game and in the
    footer. Entries with an empty url are hidden.
-   Add Ko-fi by filling its url, e.g. 'https://ko-fi.com/yourname'. */
+   Ko-fi links to the current goal page (progress bar). */
 window.SITE = {
   SUPPORT_LINKS: [
-    { label: 'PayPal', url: 'https://www.paypal.com/paypalme/MleyeKane' },
-    { label: 'Ko-fi', url: '' }
+    { label: 'Ko-fi', url: 'https://ko-fi.com/kanedino/goal?g=0' }
   ]
 };
 window.SITE.supportLinks = function () {
