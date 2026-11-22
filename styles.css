@@ -266,3 +266,32 @@ body.streamer .guess-form input,body.streamer .guess-form button{font-size:18px}
 .chat-votes .v-empty{display:block;color:var(--muted);font-weight:600}
 .chat-actions{display:flex;flex-wrap:wrap;gap:8px}
 @media (max-width:600px){.streamer-bar{font-size:16px}.chat-how{font-size:16px}.chat-votes li{grid-template-columns:110px 1fr auto;font-size:14px}}
+
+/* ===== Period order, practice badge (player feedback) ===== */
+.msg.info{color:var(--text)}
+.board th.has-info{cursor:help}
+.board th .info-mark{margin-left:4px;font-size:11px;opacity:.7}
+.board th.has-info:hover .info-mark,.board th.has-info:focus .info-mark{opacity:1;color:var(--accent)}
+.help .help-periods{margin-top:0}
+.practice-badge{display:flex;align-items:center;flex-wrap:wrap;gap:8px;font-size:12.5px;font-weight:700;color:var(--close)}
+.practice-badge[hidden],.next-puzzle[hidden]{display:none}
+.back-daily{padding:5px 11px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--text);font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer}
+.back-daily:hover{border-color:var(--accent);color:var(--accent)}
+.cell .v-short,.board th .v-short{display:none}
+
+/* ===== Phones: each guess = name + a row of 6 small tiles (no sideways scroll) ===== */
+@media (max-width:600px){
+  .table-wrap{overflow-x:visible}
+  .board,.board thead,.board tbody{display:block;width:100%}
+  .board tr{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:3px;margin-bottom:8px}
+  .board th.col-name{display:none}
+  .board th{font-size:8px;letter-spacing:0;padding:0;white-space:normal;overflow-wrap:anywhere;text-align:center}
+  .board th .info-mark{display:block;margin:1px 0 0}
+  .board .cell,body.streamer .board .cell{min-width:0;padding:7px 0;font-size:10px;letter-spacing:-.01em;border-radius:7px;line-height:1.2;hyphens:auto;-webkit-hyphens:auto;overflow-wrap:anywhere}
+  .board .cell.name-cell,body.streamer .board .cell.name-cell{grid-column:1/-1;padding:5px 9px;font-size:13px;border-radius:8px}
+  .board .cell .v-full{display:none}
+  .board .cell .v-short,.board th .v-short{display:inline}
+  .board th .v-full{display:none}
+  .board .arrow{font-size:12px;margin-top:2px}
+}
+.banner b.reveal-again{cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px}

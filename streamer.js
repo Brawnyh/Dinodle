@@ -6,6 +6,8 @@
       never writes to chat). Default target is a random dinosaur (no spoilers
       from viewers who already played today).
    Needs engine.js (window.DinodleGame) and i18n.js.
+   The page itself opens on a random dinosaur (dinos.js `startPractice`), so a
+   finished daily board is never shown on stream.
    ========================================================= */
 (function (global) {
   'use strict';
@@ -175,7 +177,10 @@
     if (!ch) { chInput.focus(); return; }
     safeSet(CH_KEY, ch);
     roundLen = parseInt($('.chat-len').value, 10) || 30;
-    if ($('.chat-target').value === 'random' && api() && !api().isPractice()) api().newPractice();
+    // The page opens on a random dinosaur; "daily" switches to today's puzzle on purpose.
+    const daily = $('.chat-target').value === 'daily';
+    if (api() && daily && api().isPractice()) api().daily();
+    else if (api() && !daily && !api().isPractice()) api().newPractice();
     connect(ch);
   });
   $('.chat-now').addEventListener('click', endRound);

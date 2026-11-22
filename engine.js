@@ -105,6 +105,12 @@
     try { s = JSON.parse(safeGet(SOLVED_KEY) || '[]'); } catch (e) {}
     if (s.indexOf(name) === -1) { s.push(name); safeSet(SOLVED_KEY, JSON.stringify(s)); }
   }
+  // Day the result popup last opened by itself, per game ({ dino: 'YYYY-MM-DD', dinoEasy: … }).
+  const REVEALED_KEY = 'dinodle_revealed_v1';
+  function readJSON(key, fallback) {
+    try { const v = JSON.parse(safeGet(key) || 'null'); return v && typeof v === 'object' ? v : fallback; }
+    catch (e) { return fallback; }
+  }
   // Puzzle #1 is 2026-11-16 (Madrid), the day Dinodle got its own site.
   function puzzleNumber() { return dayNumber() - Math.floor(Date.UTC(2026, 10, 16) / 86400000) + 1; }
 
@@ -401,7 +407,7 @@
     const dailyIndex = dayNumber() % data.length;
 
     let inputEl, formEl, msgEl, boardBody, counterEl, scoreEl, tokensEl, hintsEl, bannerEl, challengeEl,
-        acListEl, acTimer;
+        countdownEl, practiceEl, acListEl, acTimer;
 
     function tokensEarned() { return tokensAt.filter(function (t) { return state.attempts >= t; }).length; }
     function tokensAvailable() { return Math.max(0, tokensEarned() - state.hintsBought.size); }
@@ -417,8 +423,12 @@
     build();
     ensureStatsWidget();
     load();
-    render();
-    if (state.over) finish();
+    // Streamer mode starts on a random dinosaur, so a finished daily never shows on stream.
+    if (cfg.startPractice) newPractice();
+    else {
+      render();
+      if (state.over) finish();
+    }
 
     function build() {
       const root = document.getElementById('game');
@@ -432,6 +442,16 @@
       head.appendChild(tokensEl);
       const cd = el('div', 'next-puzzle');
       head.appendChild(cd);
+      countdownEl = cd;
+      // Shown instead of the countdown during a practice game.
+      practiceEl = el('div', 'practice-badge');
+      practiceEl.hidden = true;
+      practiceEl.appendChild(el('span', null, T('practice_badge')));
+      const back = el('button', 'back-daily', T('back_daily'));
+      back.type = 'button';
+      back.addEventListener('click', backToDaily);
+      practiceEl.appendChild(back);
+      head.appendChild(practiceEl);
       root.appendChild(head);
       startCountdown(cd);
 
@@ -472,7 +492,24 @@
       const thead = el('thead');
       const trh = el('tr');
       trh.appendChild(el('th', 'col-name', T('col_name')));
-      attributes.forEach(function (a) { trh.appendChild(el('th', null, a.label)); });
+      attributes.forEach(function (a) {
+        const th = el('th');
+        if (a.shortLabel && a.shortLabel !== a.label) {
+          th.appendChild(el('span', 'v-full', a.label));
+          th.appendChild(el('span', 'v-short', a.shortLabel));
+        } else th.textContent = a.label;
+        // Optional explanation (e.g. the order of the periods): hover, or tap on phones.
+        if (a.info) {
+          th.className = 'has-info';
+          th.title = a.info;
+          th.tabIndex = 0;
+          th.appendChild(el('span', 'info-mark', 'ⓘ'));
+          const show = function () { showMsg(a.info, 'info'); };
+          th.addEventListener('click', show);
+          th.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); show(); } });
+        }
+        trh.appendChild(th);
+      });
       thead.appendChild(trh);
       table.appendChild(thead);
       boardBody = el('tbody');
@@ -515,6 +552,11 @@
       });
       modal.addEventListener('click', function (e) {
         if (e.target === modal) modal.classList.remove('show');
+      });
+      // Escape closes any open popup (result, stats).
+      document.addEventListener('keydown', function (e) {
+        if (e.key !== 'Escape') return;
+        document.querySelectorAll('.modal-overlay.show').forEach(function (m) { m.classList.remove('show'); });
       });
     }
 
@@ -669,7 +711,18 @@
         markSolved(state.target.name);
       }
       render();
-      showRevealModal(state.target, state.won);
+      // The answer's name in the banner reopens the popup.
+      const nameEl = bannerEl.querySelector('b');
+      if (nameEl) {
+        nameEl.className = 'reveal-again';
+        nameEl.addEventListener('click', function () { showRevealModal(state.target, state.won); });
+      }
+      // The popup opens by itself once per daily puzzle (not on every reload); always after practice.
+      const seen = readJSON(REVEALED_KEY, {});
+      if (state.practice || seen[gameId] !== todayStamp()) {
+        showRevealModal(state.target, state.won);
+        if (!state.practice) { seen[gameId] = todayStamp(); safeSet(REVEALED_KEY, JSON.stringify(seen)); }
+      }
     }
 
     // Wordle-style result: one emoji row per guess, no names (no spoilers).
@@ -816,6 +869,8 @@
     function render() {
       if (!state.target) return;
       counterEl.textContent = state.attempts;
+      practiceEl.hidden = !state.practice;
+      countdownEl.hidden = state.practice;
       // Lets the theme react to progress (the jungle turns volcanic).
       global.dispatchEvent(new CustomEvent('dinodle:progress', {
         detail: { attempts: state.attempts, max: maxAttempts, over: state.over, won: state.won }
@@ -897,7 +952,11 @@
       attributes.forEach(function (a) {
         const r = a.compare(g, state.target) || { status: 'wrong' };
         const td = el('td', 'cell ' + r.status);
-        td.innerHTML = a.display(g) + (r.arrow ? '<span class="arrow">' + r.arrow + '</span>' : '');
+        // Optional short form for the compact phone layout (e.g. "8 t" for 8,000 kg).
+        const value = a.short
+          ? '<span class="v-full">' + a.display(g) + '</span><span class="v-short">' + a.short(g) + '</span>'
+          : a.display(g);
+        td.innerHTML = value + (r.arrow ? '<span class="arrow">' + r.arrow + '</span>' : '');
         tr.appendChild(td);
       });
       return tr;
@@ -928,12 +987,7 @@
       }
       state.target = data[dailyIndex];
     }
-    function newPractice() {
-      state.practice = true;
-      let i;
-      do { i = Math.floor(Math.random() * data.length); }
-      while (data.length > 1 && data[i].name === state.target.name);
-      state.target = data[i];
+    function resetBoard() {
       state.guesses = []; state.attempts = 0;
       state.over = false; state.won = false; state.hintsBought = new Set();
       inputEl.disabled = false;
@@ -941,7 +995,25 @@
       if (b) b.disabled = false;
       bannerEl.className = 'banner'; bannerEl.innerHTML = '';
       document.body.classList.remove('extinct');
-      showMsg(''); render();
+      showMsg('');
+    }
+    function newPractice() {
+      state.practice = true;
+      let i;
+      do { i = Math.floor(Math.random() * data.length); }
+      while (data.length > 1 && data[i].name === state.target.name);
+      state.target = data[i];
+      resetBoard();
+      render();
+      global.dispatchEvent(new Event('dinodle:newgame'));
+    }
+    // Leaves practice and reloads today's puzzle as saved.
+    function backToDaily() {
+      state.practice = false;
+      resetBoard();
+      load();
+      render();
+      if (state.over) finish();
       global.dispatchEvent(new Event('dinodle:newgame'));
     }
 
@@ -950,6 +1022,7 @@
       guess: submitGuess,
       find: findItem,
       newPractice: newPractice,
+      daily: backToDaily,
       puzzleNumber: puzzleNumber,
       isOver: function () { return state.over; },
       isPractice: function () { return state.practice; },
